@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:voting_system/utils/utils.dart';
+import 'package:voting_system/widgets/round_button.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -8,8 +10,115 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+     ValueNotifier<bool> _obsecurePassword = ValueNotifier<bool>(true);
+     
+     final _emailController = TextEditingController();
+     final _passwordController = TextEditingController();
+     final _formKey = GlobalKey<FormState>();
+    FocusNode emailFocusNode = FocusNode();
+    FocusNode passwordFocusNode = FocusNode();
+
+    @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    emailFocusNode.dispose();
+    passwordFocusNode.dispose();
+    _obsecurePassword.dispose();
+
+    super.dispose();
+  }
+ 
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    final height = MediaQuery.of(context).size.height * 1;
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Login'),
+        centerTitle: true,
+      ),
+      body:  SafeArea(
+        child: Form(
+          key: _formKey,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                TextFormField(
+                  controller: _emailController,
+                  keyboardType: TextInputType.emailAddress,
+                  focusNode: emailFocusNode,
+                  decoration: const InputDecoration(
+                    hintText: 'Email',
+                    labelText: 'Email',
+                    prefixIcon: Icon(Icons.alternate_email),
+            
+                  ),
+                  validator: (value){
+                    if(value == null || value.isEmpty){
+                      return 'Please enter your email';
+                    }
+                    if(!value.contains('@')){
+                      return 'Enter a valif Email';
+                    }
+                    return null;
+                  },
+                  onFieldSubmitted: (value){
+                   Utils.fieldFocusChange(context, emailFocusNode, passwordFocusNode);
+                  },
+                ),
+                 SizedBox(height: 15,),
+                 ValueListenableBuilder(
+                  valueListenable: _obsecurePassword,
+                   builder: (context ,value ,child){
+                   return   TextFormField(
+                  controller: _passwordController,
+                  obscureText: _obsecurePassword.value,
+                  obscuringCharacter: '*',
+                  focusNode: passwordFocusNode,
+                  decoration: InputDecoration(
+                    hintText: 'Password',
+                    labelText: 'Password',
+                    prefixIcon: Icon(Icons.lock_open_rounded),
+                    suffixIcon: InkWell(
+                      onTap: (){
+                        _obsecurePassword.value = !_obsecurePassword.value;
+                      },
+                      child: Icon(
+                       _obsecurePassword.value ? Icons.visibility_off_outlined : Icons.visibility
+                        )),
+            
+                  ),
+                  validator: (value){
+                   if(value == null || value.isEmpty){
+                    return 'Enter your Password';
+                   }
+                   if(value.length < 6){
+                    return 'Password must be at least 6 characters';
+                   }
+                   return null;
+                  },
+                );
+                   }
+                   ),
+                   SizedBox(height: height * .085,),
+                 RoundButton(
+                  onPress: (){
+                    if(_formKey.currentState!.validate()){
+                      print("Email: ${_emailController.text}");
+                      print("Password: ${_passwordController.text}");
+                    }
+                  },
+                   title: 'Login',
+                   ),
+                
+              ],
+            ),
+          ),
+        )
+        ),
+    );
   }
 }

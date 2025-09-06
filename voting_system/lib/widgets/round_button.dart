@@ -5,7 +5,16 @@ class RoundButton extends StatelessWidget {
   final String title;
   final VoidCallback onPress;
   final double height;
-  const RoundButton({super.key,this.height =40, required this.onPress,required this.title});
+  final double width;
+  final bool loading;
+
+  const RoundButton({super.key,
+  this.height =40,
+   this.width = 200,
+    required this.onPress,
+    required this.title,
+    this.loading = false
+    });
 
   @override
   Widget build(BuildContext context) {
@@ -13,11 +22,13 @@ class RoundButton extends StatelessWidget {
       onTap: onPress,
       child: Container(
         height: height,
+        width: width,
         decoration: BoxDecoration(
-          color: AppColors.buttonColor
+          color: AppColors.buttonColor,
+          borderRadius: BorderRadius.circular(10),
         ),
         child: Center(
-          child: Text(title, ),
+          child: loading ? CircularProgressIndicator() : Text(title, style: TextStyle(color: AppColors.whiteColor),),
         ),
       ),
     );
