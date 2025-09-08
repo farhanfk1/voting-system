@@ -1,8 +1,30 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:voting_system/utils/routes/routes.dart';
 import 'package:voting_system/utils/routes/routes_name.dart';
+import 'package:voting_system/viewsModel/login_view_model.dart';
 
-void main() {
+void main() async{
+   WidgetsFlutterBinding.ensureInitialized();
+
+  if (kIsWeb) {
+    await Firebase.initializeApp(
+      options: const FirebaseOptions(
+        apiKey: "AIzaSyAMpYbB_W3CRIkeCwzc4V28K3vrjSbbCX4",
+  authDomain: "dapp-5ae3c.firebaseapp.com",
+  projectId: "dapp-5ae3c",
+  storageBucket: "dapp-5ae3c.firebasestorage.app",
+  messagingSenderId: "875258730243",
+  appId: "1:875258730243:web:62c1176ef6f666cb977b36",
+  measurementId: "G-67JZH7EJP7"
+      ),
+    );
+  } else {
+    await Firebase.initializeApp(
+    ); // For Android/iOS
+  }
   runApp(const MyApp());
 }
 
@@ -11,18 +33,24 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    
-    return MaterialApp(
+
+    return MultiProvider(providers: [
+      ChangeNotifierProvider(create: (_) => LoginViewModel()),
+    ],
+    child:  MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
+      title: 'Voting System',
       theme: ThemeData(
         
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      initialRoute: RoutesName.login,
-      onGenerateRoute: Routes.generateRoute,
+       initialRoute: RoutesName.login,
+       onGenerateRoute: Routes.generateRoute,
+    )
     );
+    
+    
   }
 }
 

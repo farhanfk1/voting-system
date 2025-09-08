@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "875258730243",
+    "project_id": "dapp-5ae3c",
+    "storage_bucket": "dapp-5ae3c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:875258730243:android:6cbab0488fc3a646977b36",
+        "android_client_info": {
+          "package_name": "com.farhan.voting_system"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDXWQBR80FFPjby4mBd4SKMCjh8uGwTX5w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

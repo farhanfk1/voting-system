@@ -5,14 +5,14 @@ import 'package:voting_system/utils/utils.dart';
 import 'package:voting_system/viewsModel/login_view_model.dart';
 import 'package:voting_system/widgets/round_button.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class SignUpScreen extends StatefulWidget {
+  const SignUpScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<SignUpScreen> createState() => _SignUpScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _SignUpScreenState extends State<SignUpScreen> {
      ValueNotifier<bool> _obsecurePassword = ValueNotifier<bool>(true);
      
      final _emailController = TextEditingController();
@@ -37,7 +37,7 @@ class _LoginScreenState extends State<LoginScreen> {
     final height = MediaQuery.of(context).size.height * 1;
     return Scaffold(
       appBar: AppBar(
-        title: Text('Login'),
+        title: Text('SignUp'),
         centerTitle: true,
       ),
       body:  SafeArea(
@@ -110,7 +110,7 @@ class _LoginScreenState extends State<LoginScreen> {
                    Consumer<LoginViewModel>(builder: (context, provider , child){
                     return     RoundButton(
                   onPress: (){
-                  Navigator.pushNamed(context, RoutesName.home);
+                    Navigator.pushNamed(context, RoutesName.login);
                     if(_formKey.currentState!.validate()){
         final loginViewModel = Provider.of<LoginViewModel>(context,listen: false);
         loginViewModel.login(
@@ -122,11 +122,11 @@ class _LoginScreenState extends State<LoginScreen> {
                       print("Password: ${_passwordController.text}");
                     }
                   },
-                   title: 'Login',
+                   title: 'Sign Up',
                    loading: provider.loading,
                    );
                    }),
-                   SizedBox(height: height * .085,),
+                    SizedBox(height: height * .085,),
 
                    Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -134,9 +134,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     children: [
                       Text("Don't have an account"),
                       TextButton(onPressed: (){
-              Navigator.pushNamed(context, RoutesName.signup);
+              Navigator.pushNamed(context, RoutesName.login);
                       },
-                       child: Text("SignUp", style: TextStyle(color: Colors.green),)
+                       child: Text("Login", style: TextStyle(color: Colors.green),)
                        )
                     ],
                    )
