@@ -152,7 +152,7 @@ class _LoginScreenState extends State<LoginScreen> {
                            Consumer<LoginViewModel>(builder: (context, provider , child){
                             return     RoundButton(
                           onPress: (){
-                         // Navigator.pushNamed(context, RoutesName.home);
+                         Navigator.pushNamed(context, RoutesName.home);
                             if(_formKey.currentState!.validate()){
                 final loginViewModel = Provider.of<LoginViewModel>(context,listen: false);
                 loginViewModel.login(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:voting_system/repository/auth_repository.dart';
 import 'package:voting_system/utils/routes/routes_name.dart';
 import 'package:voting_system/utils/utils.dart';
 import 'package:voting_system/viewsModel/login_view_model.dart';
@@ -23,7 +24,6 @@ final _phoneController = TextEditingController();
 final _dobController = TextEditingController();
 final _addressController = TextEditingController();
 final _confirmPasswordController = TextEditingController();
-
      final _formKey = GlobalKey<FormState>();
      FocusNode nameFocusNode = FocusNode();
     FocusNode emailFocusNode = FocusNode();
@@ -34,7 +34,7 @@ final _confirmPasswordController = TextEditingController();
     FocusNode addressFocusNode = FocusNode();
     FocusNode cnicFocusNode = FocusNode();
 
-
+     AuthRepository auth = AuthRepository();
     @override
   void dispose() {
     _nameController.dispose();
@@ -308,8 +308,9 @@ final _confirmPasswordController = TextEditingController();
                             return     RoundButton(
                           onPress: (){
                             if(_formKey.currentState!.validate()){
+                           
                 final loginViewModel = Provider.of<LoginViewModel>(context,listen: false);
-                loginViewModel.login(
+                loginViewModel.register(
                   email:  _emailController.text.trim(),
                   password: _passwordController.text.trim(),
                   context: context

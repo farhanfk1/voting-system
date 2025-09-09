@@ -25,12 +25,37 @@ class LoginViewModel with ChangeNotifier{
           await _authRepository.signIn(email, password);
           Utils.toastMessage("Login Successful");
         } on FirebaseAuthException catch (e) {
+              if (e.code == 'weak-password') {
+      print('The password provided is too weak.');
+       } else if (e.code == 'email-already-in-use') {
+      print('The account already exists for that email.');
+       } else {
           Utils.toastMessage(e.message ?? "Login Failed");
-
-        }finally{
+             } }finally{
           setLoading(false);
         }
-      }
+       }
 
-
+       Future<void>  register({
+        required String email,
+        required String password,
+        required BuildContext context
+        })async{
+         setLoading(true);
+         try{
+          await _authRepository.signUp(email, password);
+          Utils.toastMessage("SignUp scuccessfuly");
+         }on FirebaseAuthException catch (e){
+          if(e.code == 'weak-password'){
+            Utils.toastMessage("The password provided is too weak");
+          } else if(e.code == 'email-already-in-use'){
+          Utils.toastMessage('The account already esists for that email');
+          } else{
+            Utils.toastMessage(e.message ?? "Sign Up Failed");
+          }
+         }
+         finally{
+          setLoading(false);
+         }
+        }
 }
