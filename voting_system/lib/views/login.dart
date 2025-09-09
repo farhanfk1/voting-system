@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:voting_system/utils/routes/routes_name.dart';
 import 'package:voting_system/utils/utils.dart';
 import 'package:voting_system/viewsModel/login_view_model.dart';
+import 'package:voting_system/widgets/reusable_textfield.dart';
 import 'package:voting_system/widgets/round_button.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -36,117 +37,166 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height * 1;
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Login'),
-        centerTitle: true,
-      ),
-      body:  SafeArea(
-        child: Form(
-          key: _formKey,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                TextFormField(
-                  controller: _emailController,
-                  keyboardType: TextInputType.emailAddress,
-                  focusNode: emailFocusNode,
-                  decoration: const InputDecoration(
-                    hintText: 'Email',
-                    labelText: 'Email',
-                    prefixIcon: Icon(Icons.alternate_email),
-            
-                  ),
-                  validator: (value){
-                    if(value == null || value.isEmpty){
-                      return 'Please enter your email';
-                    }
-                    if(!value.contains('@')){
-                      return 'Enter a valif Email';
-                    }
-                    return null;
-                  },
-                  onFieldSubmitted: (value){
-                   Utils.fieldFocusChange(context, emailFocusNode, passwordFocusNode);
-                  },
-                ),
-                 SizedBox(height: 15,),
-                 ValueListenableBuilder(
-                  valueListenable: _obsecurePassword,
-                   builder: (context ,value ,child){
-                   return   TextFormField(
-                  controller: _passwordController,
-                  obscureText: _obsecurePassword.value,
-                  obscuringCharacter: '*',
-                  focusNode: passwordFocusNode,
-                  decoration: InputDecoration(
-                    hintText: 'Password',
-                    labelText: 'Password',
-                    prefixIcon: Icon(Icons.lock_open_rounded),
-                    suffixIcon: InkWell(
-                      onTap: (){
-                        _obsecurePassword.value = !_obsecurePassword.value;
-                      },
-                      child: Icon(
-                       _obsecurePassword.value ? Icons.visibility_off_outlined : Icons.visibility
-                        )),
-            
-                  ),
-                  validator: (value){
-                   if(value == null || value.isEmpty){
-                    return 'Enter your Password';
-                   }
-                   if(value.length < 6){
-                    return 'Password must be at least 6 characters';
-                   }
-                   return null;
-                  },
-                );
-                   }
-                   ),
-                   SizedBox(height: height * .085,),
-                   Consumer<LoginViewModel>(builder: (context, provider , child){
-                    return     RoundButton(
-                  onPress: (){
-                  Navigator.pushNamed(context, RoutesName.home);
-                    if(_formKey.currentState!.validate()){
-        final loginViewModel = Provider.of<LoginViewModel>(context,listen: false);
-        loginViewModel.login(
-          email:  _emailController.text.trim(),
-          password: _passwordController.text.trim(),
-          context: context
-        );
-                print("Email: ${_emailController.text}");
-                      print("Password: ${_passwordController.text}");
-                    }
-                  },
-                   title: 'Login',
-                   loading: provider.loading,
-                   );
-                   }),
-                   SizedBox(height: height * .085,),
+      // appBar: AppBar(
+      //   title: Text('Login'),
+      //   centerTitle: true,
+      // ),
+      body:  Stack(
+        children:[ 
+          Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(colors: [Color(0xFF6a11cb), Color(0xFF2575fc)],
 
-                   Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text("Don't have an account"),
-                      TextButton(onPressed: (){
-              Navigator.pushNamed(context, RoutesName.signup);
-                      },
-                       child: Text("SignUp", style: TextStyle(color: Colors.green),)
-                       )
-                    ],
-                   )
-              
-                
-              ],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter
+               )
             ),
           ),
-        )
+          
+          Positioned(
+            top: -60,
+            left: -40,
+            child: Container(
+              height: 180,
+              width: 180,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white.withOpacity(0.1)
+              ),
+            )),
+                    Positioned(
+          bottom: -80,
+          right: -50,
+          child: Container(
+            height: 200,
+            width: 200,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.white.withOpacity(0.1),
+            ),
+          ),
         ),
+
+          SafeArea(
+            child: Column(
+              mainAxisSize:  MainAxisSize.min,
+              children: [
+                 SizedBox(height: 25),
+                 Text("Welcome Back!", style: TextStyle(
+                  fontSize: 32, color: Colors.black)),
+                 Text("Login to access the voting system and cast\n                   your vote securely.", 
+                 style: TextStyle(
+                  fontSize: 16, color: Colors.white38)),
+              SizedBox(height: 50),
+                Form(
+                  key: _formKey,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                         ReusableTextFormField(
+                          controller: _emailController, 
+                          hintText: "Enter your Email", 
+                          labelText: "Email",
+                          focusNode: emailFocusNode,
+                          prefixIcon: Icon(Icons.email),
+                            validator: (value){
+                            if(value == null || value.isEmpty){
+                              return 'Please enter your email';
+                            }
+                            if(!value.contains('@')){
+                              return 'Enter a valif Email';
+                            }
+                            return null;
+                          },
+                          onFieldSubmitted: (value){
+                           Utils.fieldFocusChange(context, emailFocusNode, passwordFocusNode);
+                          },
+                          ),
+                        
+                         SizedBox(height: 15,),
+                          ValueListenableBuilder(
+                              valueListenable: _obsecurePassword,
+                               builder: (context, value, child){
+                                return ReusableTextFormField(
+                            controller: _passwordController, 
+                            hintText: "Enter your password", 
+                            labelText: "Password",
+                            focusNode: passwordFocusNode,
+                            obscureText: value,
+                            prefixIcon: Icon(Icons.lock),
+                            suffixIcon:  Icon(
+                             value ? 
+                             Icons.visibility_off_outlined :
+                             Icons.visibility_outlined
+                                ),
+                                onpress: (){
+                              _obsecurePassword.value = !value;
+                                },
+                                
+                                validator: (value){
+                            if(value == null || value.isEmpty){
+                              return 'Please enter your pssword';
+                            } if(value.length < 6){
+                             return 'Your password is less than 6 digit';
+                            }
+                            return null;
+                          },
+                                );
+                               }
+                               ),
+                 
+                           SizedBox(height: height * .085,),
+                           Consumer<LoginViewModel>(builder: (context, provider , child){
+                            return     RoundButton(
+                          onPress: (){
+                         // Navigator.pushNamed(context, RoutesName.home);
+                            if(_formKey.currentState!.validate()){
+                final loginViewModel = Provider.of<LoginViewModel>(context,listen: false);
+                loginViewModel.login(
+                  email:  _emailController.text.trim(),
+                  password: _passwordController.text.trim(),
+                  context: context
+                );
+                        print("Email: ${_emailController.text}");
+                              print("Password: ${_passwordController.text}");
+                            }
+                          },
+                           title: 'Login',
+                           loading: provider.loading,
+                           );
+                           }),
+                           SizedBox(height: height * .085,),
+                        
+                           Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text("Don't have an account", style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black26
+                              ),),
+                              TextButton(onPressed: (){
+                      Navigator.pushNamed(context, RoutesName.signup);
+                              },
+                               child: Text("SignUp", style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.green),)
+                               )
+                            ],
+                           )
+                      
+                        
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),]
+      ),
     );
   }
 }
