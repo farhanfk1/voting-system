@@ -151,25 +151,39 @@ class _LoginScreenState extends State<LoginScreen> {
                            SizedBox(height: height * .085,),
                            Consumer<LoginViewModel>(builder: (context, provider , child){
                             return     RoundButton(
-                          onPress: (){
-                         Navigator.pushNamed(context, RoutesName.home);
+                                                         title: 'Login',
+                           loading: provider.loading,
+                          onPress: ()async{
+                         
                             if(_formKey.currentState!.validate()){
                 final loginViewModel = Provider.of<LoginViewModel>(context,listen: false);
-                loginViewModel.login(
+            bool isSuccess = await   loginViewModel.login(
                   email:  _emailController.text.trim(),
                   password: _passwordController.text.trim(),
                   context: context
                 );
+                             if(isSuccess){
+                            Navigator.pushNamed(context, RoutesName.home);               
                         print("Email: ${_emailController.text}");
                               print("Password: ${_passwordController.text}");
                             }
+
+
+                            }
                           },
-                           title: 'Login',
-                           loading: provider.loading,
+
                            );
                            }),
-                           SizedBox(height: height * .085,),
-                        
+                              Align(
+                                alignment: Alignment.bottomRight,
+                                child: TextButton(onPressed: (){
+                                  Navigator.pushNamed(context, RoutesName.forgot);
+                                },
+                                 child: Text("Forgot Password?", style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.green),)
+                                 ),
+                              ),
                            Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
@@ -184,10 +198,16 @@ class _LoginScreenState extends State<LoginScreen> {
                                child: Text("SignUp", style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: Colors.green),)
-                               )
+                               ),
                             ],
-                           )
-                      
+                           ),
+                       TextButton(onPressed: (){
+                      Navigator.pushNamed(context, RoutesName.createElection);
+                              },
+                               child: Text("Admin", style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.green),)
+                               ),
                         
                       ],
                     ),

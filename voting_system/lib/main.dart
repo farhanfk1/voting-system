@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:voting_system/utils/routes/routes.dart';
 import 'package:voting_system/utils/routes/routes_name.dart';
+import 'package:voting_system/viewsModel/election_view_model.dart';
 import 'package:voting_system/viewsModel/login_view_model.dart';
 
 void main() async{
@@ -36,6 +37,8 @@ class MyApp extends StatelessWidget {
 
     return MultiProvider(providers: [
       ChangeNotifierProvider(create: (_) => LoginViewModel()),
+      ChangeNotifierProvider(create: (_) => ElectionViewModel()),
+
     ],
     child:  MaterialApp(
       debugShowCheckedModeBanner: false,

@@ -16,7 +16,7 @@ class LoginViewModel with ChangeNotifier{
     notifyListeners();
   }
 
-  Future<void> login({
+  Future<bool> login({
     required String email,
      required String password,
       required BuildContext context})async{
@@ -24,6 +24,7 @@ class LoginViewModel with ChangeNotifier{
         try{
           await _authRepository.signIn(email, password);
           Utils.toastMessage("Login Successful");
+          return true;
         } on FirebaseAuthException catch (e) {
               if (e.code == 'weak-password') {
       print('The password provided is too weak.');
@@ -31,7 +32,9 @@ class LoginViewModel with ChangeNotifier{
       print('The account already exists for that email.');
        } else {
           Utils.toastMessage(e.message ?? "Login Failed");
-             } }finally{
+             }
+             return false;
+              }finally{
           setLoading(false);
         }
        }
