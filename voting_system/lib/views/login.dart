@@ -202,7 +202,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             ],
                            ),
                        TextButton(onPressed: (){
-                      Navigator.pushNamed(context, RoutesName.createElection);
+                      Navigator.pushNamed(context, RoutesName.admin);
                               },
                                child: Text("Admin", style: TextStyle(
                                 fontWeight: FontWeight.bold,

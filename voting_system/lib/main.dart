@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:voting_system/utils/routes/routes.dart';
 import 'package:voting_system/utils/routes/routes_name.dart';
+import 'package:voting_system/viewsModel/admin_auth_view_model.dart';
 import 'package:voting_system/viewsModel/election_view_model.dart';
 import 'package:voting_system/viewsModel/login_view_model.dart';
+import 'package:voting_system/viewsModel/vote_view_model.dart';
 
 void main() async{
    WidgetsFlutterBinding.ensureInitialized();
@@ -37,7 +39,10 @@ class MyApp extends StatelessWidget {
 
     return MultiProvider(providers: [
       ChangeNotifierProvider(create: (_) => LoginViewModel()),
+      ChangeNotifierProvider(create: (_) => AdminAuthViewModel()),
       ChangeNotifierProvider(create: (_) => ElectionViewModel()),
+      ChangeNotifierProvider(create: (_) => VoteViewModel()),
+
 
     ],
     child:  MaterialApp(
