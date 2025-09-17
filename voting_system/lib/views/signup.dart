@@ -311,9 +311,14 @@ final _confirmPasswordController = TextEditingController();
                            
                 final loginViewModel = Provider.of<LoginViewModel>(context,listen: false);
                 loginViewModel.register(
-                  email:  _emailController.text.trim(),
-                  password: _passwordController.text.trim(),
-                  context: context
+                 email: _emailController.text.trim(),
+                 password: _passwordController.text.trim(),
+                 context: context,
+                 name: _nameController.text.trim(),
+                 cnic: _cnicController.text.trim(),
+                 phone: _phoneController.text.trim(),
+                 dob: _dobController.text.trim(),
+                 address: _addressController.text.trim(),
                 );
                  Navigator.pushNamed(context, RoutesName.login);
 

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/widgets.dart';
 
@@ -13,40 +14,70 @@ class AdminAuthViewModel with ChangeNotifier {
   bool _isLoggedIn = false;
   bool get isLoggedIn => _isLoggedIn;
 
-  Future<bool> adminLogin(String email, String password) async {
-    _isLoading = true;
-    notifyListeners();
-  
-   try{
-    final userCredential = await _auth.signInWithEmailAndPassword(
-      email: email, 
-      password: password);
+Future<bool> adminLogin(String email, String password) async {
+  _isLoading = true;
+  notifyListeners();
 
-      // Step 2: Allow only specific admin email
+  try {
+    // Try logging in first
+    UserCredential userCredential;
 
-    if (userCredential.user != null && email == _adminEmail && password == _adminPassword){
-        _isLoggedIn = true;
-        _isLoading = false;
-        notifyListeners();
-        return true;
-    } else{
-              // Logged in but not an admin → log out immediately
-        await _auth.signOut();
-        _isLoading = false;
-        notifyListeners();
-        return false;
+    try {
+      userCredential = await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        // Admin not registered → Register
+        userCredential = await _auth.createUserWithEmailAndPassword(
+          email: email,
+          password: password,
+        );
+      } else {
+        throw e;
+      }
     }
 
-   } on FirebaseAuthException catch (e){
-          debugPrint("Login failed: ${e.message}");
+    final user = userCredential.user;
+
+    // Check if correct admin
+    if (user != null && email == _adminEmail && password == _adminPassword) {
+      _isLoggedIn = true;
+
+      // ✅ Firestore check
+      final uid = user.uid;
+      final doc = await FirebaseFirestore.instance
+          .collection('admin')
+          .doc(uid)
+          .get();
+
+      if (!doc.exists) {
+        await FirebaseFirestore.instance.collection('admin').doc(uid).set({
+          'name': 'Admin',
+          'email': _adminEmail,
+          'cnic': '16202-7618540-3',
+          'phone': '03159883348',
+          'dob': '10/03/2003',
+          'address': 'Swabi',
+          'hasVoted': false,
+        });
+      }
+
+      _isLoading = false;
+      notifyListeners();
+      return true;
+    } else {
+      await _auth.signOut();
       _isLoading = false;
       notifyListeners();
       return false;
-   }
-  }
-  void logout() async{
-    await _auth.signOut();
-    _isLoggedIn = false;
+    }
+  } on FirebaseAuthException catch (e) {
+    debugPrint("Admin login failed: ${e.message}");
+    _isLoading = false;
     notifyListeners();
+    return false;
   }
+}
 }

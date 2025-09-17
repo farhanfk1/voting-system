@@ -28,6 +28,7 @@ void main() async{
     await Firebase.initializeApp(
     ); // For Android/iOS
   }
+
   runApp(const MyApp());
 }
 

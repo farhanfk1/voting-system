@@ -16,7 +16,7 @@ class VoteRepository {
 
     VoteRepository() {
     _client = Web3Client(_rpcUrl, Client());
-    _contractAddress = EthereumAddress.fromHex('YOUR_CONTRACT_ADDRESS');
+    _contractAddress = EthereumAddress.fromHex('0x5b38Da6a701c568545dCfcB03FcB875f56beddC4');
   }
     Future<void> init() async {
     _credentials = EthPrivateKey.fromHex(_privateKey);
