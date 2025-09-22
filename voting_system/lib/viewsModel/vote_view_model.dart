@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:voting_system/repository/vote_repository.dart';
+import 'package:voting_system/repository/voter_repository.dart';
 
 class VoteViewModel with ChangeNotifier{
   final VoteRepository _repo = VoteRepository();
-
+final VoterRepository _voterRepo = VoterRepository();
   
   bool _isLoading = false;
   bool get isLoading => _isLoading;
@@ -22,14 +23,24 @@ class VoteViewModel with ChangeNotifier{
   }
 
 
-  Future<void> castVote(BigInt electionId, int candidateIndex) async {
+  Future<String> castVote(BigInt electionId, int candidateIndex) async {
     _isLoading = true;
     notifyListeners();
     try {
+    //  Check if voter already voted
+
+    final alreadyVoted = await _voterRepo.hasAlreadyVoted(electionId);
+     if (alreadyVoted) {
+        return "You have already voted in this election.";
+      }
+    //  Cast vote on blockchain
       await _repo.vote(electionId, candidateIndex);
+    //   Mark as voted in Firestore
+    await _voterRepo.markAsVoted(electionId);
+    return "Vote cast successfully!";
     } catch (e) {
       debugPrint("Vote error: $e");
-      rethrow;
+      return "Voting failed. Please try again.";
     } finally {
       _isLoading = false;
       notifyListeners();

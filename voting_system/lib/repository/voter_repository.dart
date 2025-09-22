@@ -12,7 +12,7 @@ class VoterRepository {
     await _firestore.collection('voters').doc(uid).set({
       'name': name,
       'cnic': cnic,
-      'hasVoted': false,
+      'votedElections': [],
     });
   }
 
@@ -24,9 +24,22 @@ class VoterRepository {
   }
 
   //has already voted
-  Future<bool> hasAlreadyVoted() async {
+  Future<bool> hasAlreadyVoted(BigInt electionId) async {
   final uid = _auth.currentUser!.uid;
   final doc = await _firestore.collection('voters').doc(uid).get();
-  return doc.exists && doc.data()?['hasVoted'] == true;
-}
+
+
+    if (doc.exists) {
+      final data = doc.data();
+      List<dynamic> votedElections = data?['votedElections'] ?? [];
+      return votedElections.contains(electionId.toString());
+    }
+    return false;}
+
+    Future<void> markAsVoted(BigInt electionId) async {
+    final uid = _auth.currentUser!.uid;
+    await _firestore.collection('voters').doc(uid).update({
+      'votedElections': FieldValue.arrayUnion([electionId.toString()]),
+    });
+  }
 }
