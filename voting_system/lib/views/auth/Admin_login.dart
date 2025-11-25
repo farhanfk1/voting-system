@@ -112,7 +112,7 @@ if (success){
                              return 'Please enter your email';
                            }
                            if(!value.contains('@')){
-                             return 'Enter a valif Email';
+                             return 'Enter a valid Email';
                            }
                            return null;
                          },

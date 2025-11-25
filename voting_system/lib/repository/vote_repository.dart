@@ -3,8 +3,8 @@ import 'package:http/http.dart';
 import 'package:web3dart/web3dart.dart';
 
 class VoteRepository {
-    final String _rpcUrl = 'https://sepolia.infura.io/v3/YOUR_INFURA_PROJECT_ID';
-  final String _privateKey = 'YOUR_PRIVATE_KEY';
+    final String _rpcUrl = 'http://127.0.0.1:7545';
+  final String _privateKey = '0x781a4c4b12a8902b4658ee006d4a3a012cfbb11b4cb8147abe42b095fd49d255';
 
     late Web3Client _client;
   late Credentials _credentials;
@@ -16,7 +16,7 @@ class VoteRepository {
 
     VoteRepository() {
     _client = Web3Client(_rpcUrl, Client());
-    _contractAddress = EthereumAddress.fromHex('0x5b38Da6a701c568545dCfcB03FcB875f56beddC4');
+_contractAddress = EthereumAddress.fromHex('0xFc23cBe2fE5151c9fcE32F4A4dCD78bE47383D4C');
   }
     Future<void> init() async {
     _credentials = EthPrivateKey.fromHex(_privateKey);

@@ -14,13 +14,22 @@ final VoterRepository _voterRepo = VoterRepository();
   List<Map<String, dynamic>> get elections => _elections;
 
   Future<void> init() async {
-    _isLoading = true;
+
+    try {
+         _isLoading = true;
     notifyListeners();
     await _repo.init();
-    _elections = await _repo.getElections();
-    _isLoading = false;
-    notifyListeners();
-  }
+     
+    final data = await _repo.getElections();
+    _elections = List<Map<String, dynamic>>.from(data);
+    } catch (e) {
+      debugPrint("INIT ERROR: $e");
+    }finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+ 
+     } 
 
 
   Future<String> castVote(BigInt electionId, int candidateIndex) async {

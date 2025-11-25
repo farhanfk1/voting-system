@@ -26,6 +26,8 @@ class LoginViewModel with ChangeNotifier{
         try{
           await _authRepository.signIn(email, password);
           Utils.toastMessage("Login Successful");
+          // Move navigation here
+         Navigator.pushReplacementNamed(context, RoutesName.home);
           return true;
         } on FirebaseAuthException catch (e) {
               if (e.code == 'weak-password') {

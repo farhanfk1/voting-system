@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:voting_system/utils/routes/routes_name.dart';
-import 'package:voting_system/views/Admin_login.dart';
-import 'package:voting_system/views/create_election_view.dart';
+import 'package:voting_system/views/auth/Admin_login.dart';
+import 'package:voting_system/views/election/create_election_view.dart';
 import 'package:voting_system/views/forgor_password.dart';
-import 'package:voting_system/views/home.dart';
-import 'package:voting_system/views/login.dart';
-import 'package:voting_system/views/result.dart';
-import 'package:voting_system/views/signup.dart';
+import 'package:voting_system/views/vote/home.dart';
+import 'package:voting_system/views/auth/login.dart';
+import 'package:voting_system/views/vote/result.dart';
+import 'package:voting_system/views/auth/signup.dart';
 import 'package:voting_system/views/splach_view.dart';
-import 'package:voting_system/views/vote.dart';
+import 'package:voting_system/views/vote/voter.dart';
 
 class Routes {
   static Route<dynamic> generateRoute(RouteSettings settings){

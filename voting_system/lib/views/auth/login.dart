@@ -154,23 +154,36 @@ class _LoginScreenState extends State<LoginScreen> {
                                                          title: 'Login',
                            loading: provider.loading,
                           onPress: ()async{
-                         
-                            if(_formKey.currentState!.validate()){
-                final loginViewModel = Provider.of<LoginViewModel>(context,listen: false);
-            bool isSuccess = await   loginViewModel.login(
-                  email:  _emailController.text.trim(),
-                  password: _passwordController.text.trim(),
-                  context: context
-                );
-                             if(isSuccess){
-                            Navigator.pushNamed(context, RoutesName.home);               
-                        print("Email: ${_emailController.text}");
-                              print("Password: ${_passwordController.text}");
-                            }
+                          if (_formKey.currentState!.validate()) {
+                     await provider.login(
+                     email: _emailController.text.trim(),
+                     password: _passwordController.text.trim(),
+                     context: context
+                           );
+                         }
+            //                 if(_formKey.currentState!.validate()){
+            //     final loginViewModel = Provider.of<LoginViewModel>(context,listen: false);
+            // bool isSuccess = await   loginViewModel.login(
+
+            //       email:  _emailController.text.trim(),
+            //       password: _passwordController.text.trim(),
+            //       context: context
+            //     );
+            //       if (isSuccess) {
+            //         // WAIT 200 ms to allow loading to stop
+            //    Future.delayed(Duration(milliseconds: 200), () {
+            //    Navigator.pushReplacementNamed(context, RoutesName.home);
+            //    });
+            //    }
+            //             //      if(isSuccess){
+            //             //     Navigator.pushNamed(context, RoutesName.home);               
+            //             // print("Email: ${_emailController.text}");
+            //             //       print("Password: ${_passwordController.text}");
+            //             //     }
 
 
-                            }
-                          },
+            //                 }
+                           },
 
                            );
                            }),
