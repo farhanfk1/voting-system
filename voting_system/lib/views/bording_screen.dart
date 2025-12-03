@@ -29,19 +29,19 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
           children: [
             buildPage
             (color: Colors.green.shade100,
-             urlImage: '',
+             urlImage: 'assets/images/ballot.jpg',
               title: "Secure Voting",
                subtitle: "Cast your vote with complete end-to-end encryption powered by blockchain technology.",
                ),
            buildPage
             (color: Colors.blue.shade100,
-             urlImage: '',
+             urlImage: 'assets/images/time.jpg',
               title: "Transparent Results",
                subtitle: "Every vote is recorded on blockchain, ensuring a 100% transparent and tamper-proof process.",
                ),         
                 buildPage
             (color: Colors.green.shade100,
-             urlImage: '',
+             urlImage: 'assets/images/blockchain.jpg',
               title: "Decentralized System",
                subtitle: "A modern voting system without central control — secure, reliable, and trustless.",
                ),              
