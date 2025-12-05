@@ -4,7 +4,7 @@ import 'package:web3dart/web3dart.dart';
 
 class VoteRepository {
     final String _rpcUrl = 'http://127.0.0.1:7545';
-  final String _privateKey = '0x781a4c4b12a8902b4658ee006d4a3a012cfbb11b4cb8147abe42b095fd49d255';
+  final String _privateKey = '0x9516159ce91b1c5d4d1f4597e481fcdd48b951966ec5b5998df661e4d76ee8c8';
 
     late Web3Client _client;
   late Credentials _credentials;
@@ -16,11 +16,11 @@ class VoteRepository {
 
     VoteRepository() {
     _client = Web3Client(_rpcUrl, Client());
-_contractAddress = EthereumAddress.fromHex('0xFc23cBe2fE5151c9fcE32F4A4dCD78bE47383D4C');
+_contractAddress = EthereumAddress.fromHex('0x3c6BA40962Aade7d6c2199B8d12f0bE3A0c5d8cC');
   }
     Future<void> init() async {
     _credentials = EthPrivateKey.fromHex(_privateKey);
-    final abiCode = await rootBundle.loadString('assets/abi/election.json');
+    final abiCode = await rootBundle.loadString('assets/abi/dvs.json');
 
     _contract = DeployedContract(
       ContractAbi.fromJson(abiCode, 'Election'),

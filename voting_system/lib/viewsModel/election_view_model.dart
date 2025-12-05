@@ -1,34 +1,90 @@
- 
- import 'package:flutter/widgets.dart';
+import 'package:flutter/widgets.dart';
+import 'package:voting_system/data/models/election_model.dart';
 import 'package:voting_system/repository/election_repository.dart';
 
-class ElectionViewModel with ChangeNotifier{
+class ElectionViewModel with ChangeNotifier {
 
- final ElectionRepository _repo = ElectionRepository();
+  final ElectionRepository _repo = ElectionRepository();
 
   bool _isLoading = false;
   bool get isLoading => _isLoading;
 
+  bool _isInitialized = false;
+  bool get isInitialized => _isInitialized;
 
+  List<ElectionModel> _elections = [];
+  List<ElectionModel> get elections => _elections;
 
- Future<void> init()async{
-  _isLoading = true;
-  notifyListeners();
-  await _repo.init();
-  _isLoading = false;
-  notifyListeners();
- }
-  Future<void> createElection(String name, String description, int start,  int end)async{
-    _isLoading= true;
+  /// ---------------------------
+  /// INIT (RUN AFTER FIRST FRAME)
+  /// ---------------------------
+  Future<void> init() async {
+    if (_isInitialized) return; // Prevent multiple calls
+
+    _isLoading = true;
     notifyListeners();
-    try{
-      await  _repo.createElection(name, description, start, end);
-    } catch (e){
-      debugPrint('Error creating election: $e');
-      rethrow;
+
+    try {
+      await _repo.init(); // smart contract initialization
+      debugPrint("Contract initialized successfully!");
+      await fetchElections();   // Fetch elections after init
+      _isInitialized = true;
+
+    } catch (e) {
+      debugPrint("contract initialization failed: $e");
+
     } finally {
       _isLoading = false;
       notifyListeners();
     }
-   }
+  }
+
+  /// ---------------------------
+  /// CREATE ELECTION
+  /// ---------------------------
+  Future<void> createElection(
+      String name, String description, int start, int end) async {
+
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      await _repo.createElection(name, description, start, end);
+      await fetchElections(); // Refresh list after creation
+
+    } catch (e) {
+      debugPrint('Error creating election: $e');
+      rethrow;
+
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  /// ---------------------------
+  /// FETCH ALL ELECTIONS
+  /// ---------------------------
+  Future<void> fetchElections() async {
+  _isLoading = true;
+  notifyListeners();
+
+  try {
+     final response = await _repo.getAllElections();
+     _elections = response.map((e) => ElectionModel.fromJson(e)).toList();
+    // _elections = response
+    //     .map((json) => ElectionModel.fromJson(json))
+    //     .toList();
+     
+      // debugPrint("Unexpected response type: ${response.runtimeType}");
+      // _elections = [];
+    
+  } catch (e) {
+    debugPrint("Error fetching elections: $e");
+  } finally {
+    _isLoading = false;
+    notifyListeners();
+  }
+}
+
 }

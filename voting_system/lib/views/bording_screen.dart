@@ -45,24 +45,6 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
               title: "Decentralized System",
                subtitle: "A modern voting system without central control — secure, reliable, and trustless.",
                ),              
-            
-            // Container(
-            //   color: Colors.red,
-            //   child: const Center(
-            //     child: Text('Page 1'),
-            //   ),
-            // ),
-            //   Container(
-            //   color: Colors.indigo,
-            //   child: const Center(
-            //     child: Text('Page 2'),
-            //   ),
-            // ),  Container(
-            //   color: Colors.green,
-            //   child: const Center(
-            //     child: Text('Page 3'),
-            //   ),
-            // ),
           ],
         ),
       ),

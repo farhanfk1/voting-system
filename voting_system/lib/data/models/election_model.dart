@@ -1,23 +1,19 @@
- class ElectionModel {
-   String id;
-   String name;
-   String description;
-   DateTime startDate;
-   DateTime endDate;
+class ElectionModel {
+  final int id;
+  final String name;
+  final int phase;
 
-   ElectionModel({
+  ElectionModel({
     required this.id,
     required this.name,
-    required this.description,
-    required this.startDate,
-    required this.endDate
-    });
+    required this.phase,
+  });
 
-    Map<String, dynamic> toJson()=>{
-      'name': name,
-      'description': description,
-      'startDate': startDate,
-      'endDate':  endDate,
-    };
-
+  factory ElectionModel.fromJson(Map<String, dynamic> json) {
+    return ElectionModel(
+      id: json['id'] ?? 0,
+      name: json['name'] ?? "",
+      phase: json['phase'] ?? 0,
+    );
+  }
 }

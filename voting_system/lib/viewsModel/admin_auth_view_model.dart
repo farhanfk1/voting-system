@@ -23,26 +23,19 @@ Future<bool> adminLogin(String email, String password) async {
     UserCredential userCredential;
 
     try {
-      userCredential = await _auth.createUserWithEmailAndPassword(
+      userCredential = await _auth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        // Admin not registered → Register
-        userCredential = await _auth.createUserWithEmailAndPassword(
-          email: email,
-          password: password,
-        );
-      } else {
-        throw e;
-      }
-    }
+     } 
+     catch (e) {
+      rethrow;
+     }
+    
 
     final user = userCredential.user;
-
     // Check if correct admin
-    if (user != null && email == _adminEmail && password == _adminPassword) {
+    if (user != null && email == _adminEmail) {
       _isLoggedIn = true;
 
       // ✅ Firestore check
