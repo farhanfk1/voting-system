@@ -8,6 +8,6 @@ class RoutesName {
   static const String  home = 'home_screen';
   static const String  voter = 'voter_screen';
    static const String  result = 'result_screen';
-
+ static const String  admin_screen = 'admin_screen';
 
 }

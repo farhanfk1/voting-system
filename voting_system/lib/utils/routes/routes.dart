@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:voting_system/utils/routes/routes_name.dart';
+import 'package:voting_system/views/admin/adminScreen.dart';
 import 'package:voting_system/views/auth/Admin_login.dart';
 import 'package:voting_system/views/election/create_election_view.dart';
 import 'package:voting_system/views/forgor_password.dart';
@@ -34,6 +35,9 @@ class Routes {
 
       case RoutesName.home:
       return MaterialPageRoute(builder: (BuildContext context)=> HomeScreen());
+
+      case RoutesName.admin_screen:
+      return MaterialPageRoute(builder: (BuildContext context)=> adminScreen());      
 
  
       case RoutesName.voter:
