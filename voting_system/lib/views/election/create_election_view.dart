@@ -30,9 +30,18 @@ class _CreateElectionScreenState extends State<CreateElectionScreen> {
     final name = _nameController.text.trim();
     final desc = _descController.text.trim();
 
+    // Validate all fields are filled
     if (name.isEmpty || desc.isEmpty || _startDate == null || _endDate == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Please fill all fields')),
+      );
+      return;
+    }
+
+    // Validate date logic: end date must be after start date
+    if (_endDate!.isBefore(_startDate!) || _endDate!.isAtSameMomentAs(_startDate!)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('End date must be after start date')),
       );
       return;
     }
@@ -41,6 +50,14 @@ class _CreateElectionScreenState extends State<CreateElectionScreen> {
     final end = _endDate!.millisecondsSinceEpoch ~/ 1000;
 
     final vm = Provider.of<ElectionViewModel>(context, listen: false);
+
+    // Check if contract is initialized
+    if (!vm.isInitialized) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Contract is still initializing. Please wait...')),
+      );
+      return;
+    }
 
     try {
       await vm.createElection(name, desc, start, end);
@@ -56,8 +73,17 @@ class _CreateElectionScreenState extends State<CreateElectionScreen> {
         _endDate = null;
       });
     } catch (e) {
+      String errorMessage = 'Failed to create election';
+      if (e.toString().contains('Contract not initialized')) {
+        errorMessage = 'Contract not initialized. Please try again.';
+      } else if (e.toString().contains('End date must be after')) {
+        errorMessage = 'End date must be after start date';
+      } else if (e.toString().contains('transaction')) {
+        errorMessage = 'Transaction failed. Please check your connection and try again.';
+      }
+      
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Failed to create election')),
+        SnackBar(content: Text(errorMessage)),
       );
     }
   }

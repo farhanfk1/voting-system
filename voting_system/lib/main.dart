@@ -9,28 +9,40 @@ import 'package:voting_system/viewsModel/election_view_model.dart';
 import 'package:voting_system/viewsModel/login_view_model.dart';
 import 'package:voting_system/viewsModel/vote_view_model.dart';
 
-void main() async{
-   WidgetsFlutterBinding.ensureInitialized();
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
 
-  if (kIsWeb) {
-    await Firebase.initializeApp(
-      options: const FirebaseOptions(
-        apiKey: "AIzaSyAMpYbB_W3CRIkeCwzc4V28K3vrjSbbCX4",
-  authDomain: "dapp-5ae3c.firebaseapp.com",
-  projectId: "dapp-5ae3c",
-  storageBucket: "dapp-5ae3c.firebasestorage.app",
-  messagingSenderId: "875258730243",
-  appId: "1:875258730243:web:62c1176ef6f666cb977b36",
-  measurementId: "G-67JZH7EJP7"
+  try {
+    if (kIsWeb) {
+      await Firebase.initializeApp(
+        options: FirebaseOptions(
+          apiKey: "AIzaSyAMpYbB_W3CRIkeCwzc4V28K3vrjSbbCX4",
+          authDomain: "dapp-5ae3c.firebaseapp.com",
+          projectId: "dapp-5ae3c",
+          storageBucket: "dapp-5ae3c.firebasestorage.app",
+          messagingSenderId: "875258730243",
+          appId: "1:875258730243:web:62c1176ef6f666cb977b36",
+          measurementId: "G-67JZH7EJP7",
+        ),
+      );
+    } else {
+      await Firebase.initializeApp();
+    }
+
+    runApp(const MyApp());
+  } catch (e) {
+    runApp(
+      MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: Text('Firebase Init Error:\n$e'),
+          ),
+        ),
       ),
     );
-  } else {
-    await Firebase.initializeApp(
-    ); // For Android/iOS
   }
-
-  runApp(const MyApp());
 }
+
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});

@@ -44,6 +44,17 @@ class ElectionViewModel with ChangeNotifier {
   /// ---------------------------
   Future<void> createElection(
       String name, String description, int start, int end) async {
+    
+    // Check if contract is initialized before proceeding
+    if (!_isInitialized) {
+      debugPrint("Contract not initialized. Attempting to initialize...");
+      try {
+        await init();
+      } catch (e) {
+        debugPrint("Failed to initialize contract: $e");
+        throw Exception("Contract initialization failed. Please try again.");
+      }
+    }
 
     _isLoading = true;
     notifyListeners();
@@ -51,6 +62,7 @@ class ElectionViewModel with ChangeNotifier {
     try {
       await _repo.createElection(name, description, start, end);
       await fetchElections(); // Refresh list after creation
+      debugPrint("Election created successfully");
 
     } catch (e) {
       debugPrint('Error creating election: $e');

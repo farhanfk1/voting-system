@@ -3,8 +3,8 @@ import 'package:http/http.dart';
 import 'package:web3dart/web3dart.dart';
 
 class VoteRepository {
-    final String _rpcUrl = 'http://127.0.0.1:7545';
-  final String _privateKey = '0x9516159ce91b1c5d4d1f4597e481fcdd48b951966ec5b5998df661e4d76ee8c8';
+    final String _rpcUrl = 'http://192.168.18.27:7545';
+  final String _privateKey = '0xa9a0ba887c153603e38f102dc9c8c214468ad8a721eac7358a0c3048fc3360ed';
 
     late Web3Client _client;
   late Credentials _credentials;
@@ -16,7 +16,7 @@ class VoteRepository {
 
     VoteRepository() {
     _client = Web3Client(_rpcUrl, Client());
-_contractAddress = EthereumAddress.fromHex('0x3c6BA40962Aade7d6c2199B8d12f0bE3A0c5d8cC');
+_contractAddress = EthereumAddress.fromHex('0x558c24bF4A0388984fD05Ed95a6A698A955A85bd');
   }
     Future<void> init() async {
     _credentials = EthPrivateKey.fromHex(_privateKey);
@@ -53,15 +53,20 @@ _contractAddress = EthereumAddress.fromHex('0x3c6BA40962Aade7d6c2199B8d12f0bE3A0
   }
     // Cast a vote
   Future<void> vote(BigInt electionId, int candidateIndex) async {
-    await _client.sendTransaction(
-      _credentials,
-      Transaction.callContract(
-        contract: _contract,
-        function: _voteFunction,
-        parameters: [electionId, BigInt.from(candidateIndex)],
-        maxGas: 100000,
-      ),
-    );
+    try {
+      await _client.sendTransaction(
+        _credentials,
+        Transaction.callContract(
+          contract: _contract,
+          function: _voteFunction,
+          parameters: [electionId, BigInt.from(candidateIndex)],
+          maxGas: 100000,
+        ),
+        chainId: 1337,
+      );
+    } catch (e) {
+      rethrow;
+    }
   }
     // Get election result
   Future<Map<String, dynamic>> getResult(BigInt electionId) async {

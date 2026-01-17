@@ -6,9 +6,9 @@ import 'package:http/http.dart';
 import 'package:web3dart/web3dart.dart';
 
 class ElectionRepository {
-  final String _rpcUrl = 'http://127.0.0.1:7545'; 
-  final String _privateKey = '0x9516159ce91b1c5d4d1f4597e481fcdd48b951966ec5b5998df661e4d76ee8c8'; 
-  final String _contractAddress = '0x3c6BA40962Aade7d6c2199B8d12f0bE3A0c5d8cC';
+  final String _rpcUrl = 'http://192.168.18.27:7545'; 
+  final String _privateKey = '0xa9a0ba887c153603e38f102dc9c8c214468ad8a721eac7358a0c3048fc3360ed'; 
+  final String _contractAddress = '0x558c24bF4A0388984fD05Ed95a6A698A955A85bd';
   //privatekey 0x9516159ce91b1c5d4d1f4597e481fcdd48b951966ec5b5998df661e4d76ee8c8
   // contrctAddres 0x3c6BA40962Aade7d6c2199B8d12f0bE3A0c5d8cC
   late Web3Client _client;
@@ -52,28 +52,40 @@ class ElectionRepository {
   }
 
   Future<void> createElection(String name, String description, int start, int end) async {
-   
-  //    if (_contract == null || _createElection == null) {
-  //   throw Exception("Contract not initialized");
-  // }
-  print("name: $name");
-  print("description: $description");
-  print("start: $start");
-  print("end: $end");
-  print("_client: $_client");
-  print("_credentials: $_credentials");
-  print("_contract: $_contract");
-  print("_createElection: $_createElection");
-    await _client.sendTransaction(
-      _credentials,
-      Transaction.callContract(
-        contract: _contract,
-        function: _createElection,
-        parameters: [name, description, BigInt.from(start), BigInt.from(end)],
-        maxGas: 1000000,
-      ),
-      chainId: null,
-    );
+    // Check if contract is initialized
+    try {
+      // Validate input parameters
+      if (name.isEmpty) {
+        throw Exception("Election name cannot be empty");
+      }
+      if (description.isEmpty) {
+        throw Exception("Election description cannot be empty");
+      }
+      if (start <= 0 || end <= 0) {
+        throw Exception("Invalid date values");
+      }
+      if (end <= start) {
+        throw Exception("End date must be after start date");
+      }
+      
+      debugPrint("Creating election: name=$name, start=$start, end=$end");
+      
+      await _client.sendTransaction(
+        _credentials,
+        Transaction.callContract(
+          contract: _contract,
+          function: _createElection,
+          parameters: [name, description, BigInt.from(start), BigInt.from(end)],
+          maxGas: 3000000,
+        ),
+        chainId: 1337,
+      );
+      
+      debugPrint("Election creation transaction sent successfully");
+    } catch (e) {
+      debugPrint("Error in createElection: $e");
+      rethrow;
+    }
   }
   Future<List<Map<String, dynamic>>> getAllElections() async {
     final getAllElections = _contract.function('getAllElections');
