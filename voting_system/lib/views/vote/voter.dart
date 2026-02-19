@@ -26,7 +26,11 @@ class _VoterScreenState extends State<VoterScreen> {
            ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Vote submitted!')),
       );
-      Navigator.pushNamed(context, RoutesName.result);
+      Navigator.pushNamed(
+        context,
+        RoutesName.result,
+        arguments: {'electionId': widget.electionId},
+      );
     } catch (e){
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Vote failed')));
 

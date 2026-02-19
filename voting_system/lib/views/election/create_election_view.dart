@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:voting_system/utils/routes/routes_name.dart';
 import 'package:voting_system/viewsModel/election_view_model.dart';
 import 'package:voting_system/widgets/reusable_textfield.dart';
 import 'package:voting_system/widgets/round_button.dart';
@@ -26,7 +27,7 @@ class _CreateElectionScreenState extends State<CreateElectionScreen> {
         Provider.of<ElectionViewModel>(context, listen: false).init());
   }
 
-  void _submitElection() async {
+  Future<bool> _submitElection() async {
     final name = _nameController.text.trim();
     final desc = _descController.text.trim();
 
@@ -35,7 +36,7 @@ class _CreateElectionScreenState extends State<CreateElectionScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Please fill all fields')),
       );
-      return;
+      return false;
     }
 
     // Validate date logic: end date must be after start date
@@ -43,7 +44,7 @@ class _CreateElectionScreenState extends State<CreateElectionScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('End date must be after start date')),
       );
-      return;
+      return false;
     }
 
     final start = _startDate!.millisecondsSinceEpoch ~/ 1000;
@@ -56,7 +57,7 @@ class _CreateElectionScreenState extends State<CreateElectionScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Contract is still initializing. Please wait...')),
       );
-      return;
+      return false;
     }
 
     try {
@@ -72,6 +73,7 @@ class _CreateElectionScreenState extends State<CreateElectionScreen> {
         _startDate = null;
         _endDate = null;
       });
+      return true;
     } catch (e) {
       String errorMessage = 'Failed to create election';
       if (e.toString().contains('Contract not initialized')) {
@@ -85,6 +87,7 @@ class _CreateElectionScreenState extends State<CreateElectionScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(errorMessage)),
       );
+      return false;
     }
   }
 
@@ -156,11 +159,15 @@ class _CreateElectionScreenState extends State<CreateElectionScreen> {
               if (vm.isInitialized)
                 RoundButton(
                   title: 'Create Election',
-                  loading: vm.isLoading, // show spinner while transaction is processing
-                  onPress: (){
-                    if (!vm.isLoading) _submitElection();
-                  } 
-                  
+                  loading: vm.isLoading,
+                  onPress: () async {
+                    if (!vm.isLoading) {
+                      final success = await _submitElection();
+                      if (success && context.mounted) {
+                        Navigator.pushNamed(context, RoutesName.home);
+                      }
+                    }
+                  },
                 ),
             ],
           ),

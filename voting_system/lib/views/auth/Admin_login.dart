@@ -14,7 +14,7 @@ class AdminLoginScreen extends StatefulWidget {
 }
 
 class _AdminLoginScreenState extends State<AdminLoginScreen> {
-       ValueNotifier<bool> _obsecurePassword = ValueNotifier<bool>(true);
+       final ValueNotifier<bool> _obsecurePassword = ValueNotifier<bool>(true);
        final TextEditingController _emailController = TextEditingController();
        final TextEditingController _passwordController = TextEditingController();
        final _formKey = GlobalKey<FormState>();
@@ -142,7 +142,7 @@ if (success){
                                
                                validator: (value){
                            if(value == null || value.isEmpty){
-                             return 'Please enter your pssword';
+                             return 'Please enter your password';
                            } if(value.length < 6){
                             return 'Your password is less than 6 digit';
                            }

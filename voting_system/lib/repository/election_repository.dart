@@ -6,11 +6,9 @@ import 'package:http/http.dart';
 import 'package:web3dart/web3dart.dart';
 
 class ElectionRepository {
-  final String _rpcUrl = 'http://192.168.18.27:7545'; 
-  final String _privateKey = '0xa9a0ba887c153603e38f102dc9c8c214468ad8a721eac7358a0c3048fc3360ed'; 
-  final String _contractAddress = '0x558c24bF4A0388984fD05Ed95a6A698A955A85bd';
-  //privatekey 0x9516159ce91b1c5d4d1f4597e481fcdd48b951966ec5b5998df661e4d76ee8c8
-  // contrctAddres 0x3c6BA40962Aade7d6c2199B8d12f0bE3A0c5d8cC
+  final String _rpcUrl = 'http://192.168.0.116:7545'; 
+  final String _privateKey = '0x63cb110b24cd132b892bb143f3b77a62e8c9291df96b48913c166450a39c5b95'; 
+  final String _contractAddress = '0xA6d204F386F914A0938dCbd48C69c20ffce1b1be';
   late Web3Client _client;
   late Credentials _credentials;
  // late EthereumAddress _contractAddress;
@@ -21,11 +19,11 @@ class ElectionRepository {
   ElectionRepository() {
    _client = Web3Client(_rpcUrl, Client());
    _testConnection();
-    // _contractAddress = EthereumAddress.fromHex('0x3c6BA40962Aade7d6c2199B8d12f0bE3A0c5d8cC'); 
+    // _contractAddress = EthereumAddress.fromHex('0x558c24bF4A0388984fD05Ed95a6A698A955A85bd'); 
   }
   void _testConnection()async {
       try {
-  final block = _client.getBlockNumber();
+  final block = await _client.getBlockNumber();
   debugPrint("Connected to blockchain! Current block: $block");
 } catch (e) {
   debugPrint("Cannot connect to blockchain: $e");
@@ -35,6 +33,8 @@ class ElectionRepository {
   Future<void> init() async {
     try {
     _credentials = EthPrivateKey.fromHex(_privateKey);
+    final senderAddress = await _credentials.extractAddress();
+      print("Sender address from Flutter: ${senderAddress.hex}");
     final String  abiString = await rootBundle.loadString('assets/abi/dvs.json');
     final abijson = jsonDecode(abiString);
     _contract = DeployedContract(
@@ -45,13 +45,14 @@ class ElectionRepository {
     _createElection = _contract.function('createElection');
     _getAllElections = _contract.function('getAllElections');
     debugPrint("Smart contract initialized successfully");
+    print("Smart contract initialized successfully");
     } catch (e) {
      debugPrint("Error initializing contract: $e");
      rethrow;
     }  
   }
 
-  Future<void> createElection(String name, String description, int start, int end) async {
+  Future<Map<String, dynamic>> createElection(String name, String description, int start, int end) async {
     // Check if contract is initialized
     try {
       // Validate input parameters
@@ -69,8 +70,9 @@ class ElectionRepository {
       }
       
       debugPrint("Creating election: name=$name, start=$start, end=$end");
-      
-      await _client.sendTransaction(
+       
+       
+       final txHash = await _client.sendTransaction(
         _credentials,
         Transaction.callContract(
           contract: _contract,
@@ -81,7 +83,16 @@ class ElectionRepository {
         chainId: 1337,
       );
       
-      debugPrint("Election creation transaction sent successfully");
+      debugPrint("Election creation transaction sent successfully, txHAsh: $txHash");
+      // return the new election as a map
+      return {
+      'id': txHash,   // temporary unique identifier
+      'name': name,
+      'description': description,
+      'start': start,
+      'end': end,
+      'phase': 0,     // assuming new elections start at phase 0
+      };
     } catch (e) {
       debugPrint("Error in createElection: $e");
       rethrow;
@@ -93,15 +104,17 @@ class ElectionRepository {
       contract: _contract,
        function: getAllElections,
         params: [],);
-        final ids = result[0];
-        final names = result[1];
-        final phases = result[2];
+         // Make sure result is not null and has expected structure
+        final  ids = result[0] ?? [];
+        final  names = result[1] ?? [];
+        final  phases = result[2] ?? [];
           // Convert the result from blockchain into a list
      return List.generate(ids.length, (i){
       return {
         'id' : ids[i].toInt(),
-        'name' : names[i],
+        'name' : names[i] ?? 'unnamed',
         'phase' : phases[i].toInt(),
+        'description': '', // add description if your contract supports it
       };
      });
   }

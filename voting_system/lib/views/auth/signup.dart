@@ -15,7 +15,7 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
-     ValueNotifier<bool> _obsecurePassword = ValueNotifier<bool>(true);
+     final ValueNotifier<bool> _obsecurePassword = ValueNotifier<bool>(true);
 final _nameController = TextEditingController();
 final _emailController = TextEditingController();
 final _passwordController = TextEditingController();
@@ -150,7 +150,7 @@ final _confirmPasswordController = TextEditingController();
                               return 'Please enter your email';
                             }
                             if(!value.contains('@')){
-                              return 'Enter a valif Email';
+                              return 'Enter a valid Email';
                             }
                             return null;
                           },
@@ -181,7 +181,7 @@ final _confirmPasswordController = TextEditingController();
                                 
                                 validator: (value){
                             if(value == null || value.isEmpty){
-                              return 'Please enter your pssword';
+                              return 'Please enter your password';
                             } if(value.length < 6){
                              return 'Your password is less than 6 digit';
                             }
@@ -221,7 +221,7 @@ final _confirmPasswordController = TextEditingController();
                                 
                                 validator: (value){
                             if(value == null || value.isEmpty){
-                              return 'Please enter your pssword';
+                              return 'Please enter your password';
                             } if(value.length < 6){
                              return 'Your password is less than 6 digit';
                             }

@@ -1,55 +1,61 @@
+import 'dart:convert';
+
 import 'package:flutter/services.dart';
 import 'package:http/http.dart';
 import 'package:web3dart/web3dart.dart';
 
 class VoteRepository {
-    final String _rpcUrl = 'http://192.168.18.27:7545';
-  final String _privateKey = '0xa9a0ba887c153603e38f102dc9c8c214468ad8a721eac7358a0c3048fc3360ed';
+  final String _rpcUrl = 'http://192.168.0.116:7545';
+  final String _privateKey = '0x63cb110b24cd132b892bb143f3b77a62e8c9291df96b48913c166450a39c5b95';
 
-    late Web3Client _client;
+  late Web3Client _client;
   late Credentials _credentials;
   late EthereumAddress _contractAddress;
   late DeployedContract _contract;
   late ContractFunction _voteFunction;
-  late ContractFunction _getResultFunction;
-  late ContractFunction _getElectionListFunction;
+  late ContractFunction _getCandidatesFunction;
+  late ContractFunction _getAllElectionsFunction;
 
-    VoteRepository() {
+  VoteRepository() {
     _client = Web3Client(_rpcUrl, Client());
-_contractAddress = EthereumAddress.fromHex('0x558c24bF4A0388984fD05Ed95a6A698A955A85bd');
+    _contractAddress = EthereumAddress.fromHex('0xA6d204F386F914A0938dCbd48C69c20ffce1b1be');
   }
-    Future<void> init() async {
+
+  Future<void> init() async {
     _credentials = EthPrivateKey.fromHex(_privateKey);
-    final abiCode = await rootBundle.loadString('assets/abi/dvs.json');
+    final abiString = await rootBundle.loadString('assets/abi/dvs.json');
+    final abijson = jsonDecode(abiString);
 
     _contract = DeployedContract(
-      ContractAbi.fromJson(abiCode, 'Election'),
+      ContractAbi.fromJson(jsonEncode(abijson['abi']), 'DVS'),
       _contractAddress,
     );
 
     _voteFunction = _contract.function('vote');
-    _getResultFunction = _contract.function('getResult');
-    _getElectionListFunction = _contract.function('getElections');
+    _getCandidatesFunction = _contract.function('getCandidates');
+    _getAllElectionsFunction = _contract.function('getAllElections');
   }
-  
-  // Get list of elections
+
+  // Get list of elections (DVS returns ids, names, phases as parallel arrays)
   Future<List<Map<String, dynamic>>> getElections() async {
     final res = await _client.call(
       contract: _contract,
-      function: _getElectionListFunction,
+      function: _getAllElectionsFunction,
       params: [],
     );
 
-    // Convert response to list of maps (id, name, description)
-    List<Map<String, dynamic>> elections = [];
-    for (var e in res[0]) {
-      elections.add({
-        'id': e[0] as BigInt,
-        'name': e[1] as String,
-        'description': e[2] as String,
-      });
-    }
-    return elections;
+    final ids = res[0] ?? [];
+    final names = res[1] ?? [];
+    final phases = res[2] ?? [];
+
+    return List.generate(ids.length, (i) {
+      return {
+        'id': ids[i] is BigInt ? ids[i] : BigInt.from(ids[i] is int ? ids[i] : 0),
+        'name': names[i] ?? 'Unnamed',
+        'description': '', // getAllElections does not return description
+        'phase': phases[i] is BigInt ? phases[i] : BigInt.from(phases[i] is int ? phases[i] : 0),
+      };
+    });
   }
     // Cast a vote
   Future<void> vote(BigInt electionId, int candidateIndex) async {
@@ -68,17 +74,17 @@ _contractAddress = EthereumAddress.fromHex('0x558c24bF4A0388984fD05Ed95a6A698A95
       rethrow;
     }
   }
-    // Get election result
+  // Get election result (DVS getCandidates returns ids, names, votes)
   Future<Map<String, dynamic>> getResult(BigInt electionId) async {
     final res = await _client.call(
       contract: _contract,
-      function: _getResultFunction,
+      function: _getCandidatesFunction,
       params: [electionId],
     );
 
-    // Example: res[0] = List of votes per candidate
+    // getCandidates returns (ids, names, votes) - res[2] is the votes array
     return {
-      'votes': res[0], // List<BigInt>
+      'votes': res[2] ?? [],
     };
   }
 }

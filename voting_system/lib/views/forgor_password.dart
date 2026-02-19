@@ -13,12 +13,14 @@ class ForgotPassword extends StatefulWidget {
 
 class _ForgotPasswordState extends State<ForgotPassword> {
   final emailController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
   final auth = FirebaseAuth.instance;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Forgot Passsword'),
+        title: Text('Forgot Password'),
       ),
       body: Stack(
         children:[ 
@@ -54,43 +56,46 @@ class _ForgotPasswordState extends State<ForgotPassword> {
               ),
             )
             ),        
-
-
-          
           Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20, ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-                  ReusableTextFormField(
-                           controller: emailController, 
-                           hintText: "Enter Email", 
-                           labelText: 'Email',
-                           prefixIcon: Icon(Icons.email),
-                              validator: (value){
-                              if(value == null || value.isEmpty){
-                                return 'Please enter your email';
-                              }
-                              if(!value.contains('@')){
-                                return 'Enter a valif Email';
-                              }
-                              return null;
-                            },
-                                        
-                    ),
-          
-              SizedBox(height: 15,),
-          
-              RoundButton(onPress: (){
-            auth.sendPasswordResetEmail(email: emailController.text.toString()).then((value){
-         Utils.toastMessage('We have send you email to recover password, plz check email');
-            }).onError((error, stackTrace){
-          Utils.toastMessage(error.toString());
-            });
-              }, 
-              title: 'Forgot')
-            ],
+          child: Form(
+            key: _formKey,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                ReusableTextFormField(
+                  controller: emailController,
+                  hintText: "Enter Email",
+                  labelText: 'Email',
+                  prefixIcon: Icon(Icons.email),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your email';
+                    }
+                    if (!value.contains('@')) {
+                      return 'Enter a valid Email';
+                    }
+                    return null;
+                  },
+                ),
+                SizedBox(height: 15,),
+                RoundButton(
+                  onPress: () {
+                    if (_formKey.currentState!.validate()) {
+                      auth.sendPasswordResetEmail(email: emailController.text.trim())
+                          .then((value) {
+                        Utils.toastMessage(
+                            'We have sent you email to recover password, please check email');
+                      }).onError((error, stackTrace) {
+                        Utils.toastMessage(error.toString());
+                      });
+                    }
+                  },
+                  title: 'Forgot',
+                )
+              ],
+            ),
           ),
         ),
         ]

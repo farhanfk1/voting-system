@@ -31,6 +31,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         backgroundColor: Colors.deepPurple,
         centerTitle: true,
+       
       ),
 
       body: Container(
@@ -86,7 +87,16 @@ class _HomeScreenState extends State<HomeScreen> {
                           trailing: Icon(Icons.arrow_forward_ios,
                               color: Colors.deepPurple),
                           onTap: () {
-                            Navigator.pushNamed(context, RoutesName.voter);
+                            Navigator.pushNamed(
+                              context,
+                              RoutesName.voter,
+                              arguments: {
+                                'electionId': election['id'] is BigInt
+                                    ? election['id']
+                                    : BigInt.from(election['id'] as int),
+                                'electionName': election['name'] ?? 'Election',
+                              },
+                            );
                           },
                         ),
                       );
