@@ -3,6 +3,8 @@ import 'package:voting_system/utils/routes/routes_name.dart';
 import 'package:voting_system/views/admin/adminScreen.dart';
 import 'package:voting_system/views/auth/Admin_login.dart';
 import 'package:voting_system/views/election/create_election_view.dart';
+import 'package:voting_system/views/election/manage_election_view.dart';
+import 'package:voting_system/views/election/admin_election_list.dart';
 import 'package:voting_system/views/forgor_password.dart';
 import 'package:voting_system/views/vote/home.dart';
 import 'package:voting_system/views/auth/login.dart';
@@ -50,10 +52,27 @@ class Routes {
 
 
       case RoutesName.result:
-            final args = settings.arguments as Map<String, dynamic>;
-      return MaterialPageRoute(builder: (BuildContext context)=> ResultScreen(
-        electionId: args['electionId'],
-      ));           
+        final args = settings.arguments as Map<String, dynamic>;
+        return MaterialPageRoute(
+          builder: (BuildContext context) => ResultScreen(
+            electionId: args['electionId'],
+          ),
+        );
+
+      case RoutesName.manageElection:
+        final args = settings.arguments as Map<String, dynamic>;
+        return MaterialPageRoute(
+          builder: (BuildContext context) => ManageElectionScreen(
+            electionId: args['electionId'],
+            electionName: args['electionName'],
+            currentPhase: args['currentPhase'],
+          ),
+        );
+
+      case RoutesName.adminElectionList:
+        return MaterialPageRoute(
+          builder: (BuildContext context) => const AdminElectionListScreen(),
+        );
 
       default: 
       return MaterialPageRoute(builder: (_){

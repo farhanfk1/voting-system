@@ -15,6 +15,9 @@ class ElectionRepository {
   late DeployedContract _contract;
   late ContractFunction _createElection;
   late ContractFunction _getAllElections;
+  late ContractFunction _addCandidate;
+  late ContractFunction _advancePhase;
+  late ContractFunction _getCandidates;
 
   ElectionRepository() {
    _client = Web3Client(_rpcUrl, Client());
@@ -44,6 +47,9 @@ class ElectionRepository {
 
     _createElection = _contract.function('createElection');
     _getAllElections = _contract.function('getAllElections');
+    _addCandidate = _contract.function('addCandidate');
+    _advancePhase = _contract.function('advancePhase');
+    _getCandidates = _contract.function('getCandidates');
     debugPrint("Smart contract initialized successfully");
     print("Smart contract initialized successfully");
     } catch (e) {
@@ -114,8 +120,78 @@ class ElectionRepository {
         'id' : ids[i].toInt(),
         'name' : names[i] ?? 'unnamed',
         'phase' : phases[i].toInt(),
-        'description': '', // add description if your contract supports it
+        'description': '',
       };
      });
+  }
+
+  Future<void> addCandidate(int electionId, String candidateName) async {
+    try {
+      if (candidateName.isEmpty) {
+        throw Exception("Candidate name cannot be empty");
+      }
+      debugPrint("Adding candidate '$candidateName' to election $electionId");
+      
+      await _client.sendTransaction(
+        _credentials,
+        Transaction.callContract(
+          contract: _contract,
+          function: _addCandidate,
+          parameters: [BigInt.from(electionId), candidateName],
+          maxGas: 500000,
+        ),
+        chainId: 1337,
+      );
+      debugPrint("Candidate added successfully");
+    } catch (e) {
+      debugPrint("Error adding candidate: $e");
+      rethrow;
+    }
+  }
+
+  Future<void> advancePhase(int electionId) async {
+    try {
+      debugPrint("Advancing phase for election $electionId");
+      
+      await _client.sendTransaction(
+        _credentials,
+        Transaction.callContract(
+          contract: _contract,
+          function: _advancePhase,
+          parameters: [BigInt.from(electionId)],
+          maxGas: 500000,
+        ),
+        chainId: 1337,
+      );
+      debugPrint("Phase advanced successfully");
+    } catch (e) {
+      debugPrint("Error advancing phase: $e");
+      rethrow;
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> getCandidates(int electionId) async {
+    try {
+      final result = await _client.call(
+        contract: _contract,
+        function: _getCandidates,
+        params: [BigInt.from(electionId)],
+      );
+      
+      final ids = result[0] ?? [];
+      final names = result[1] ?? [];
+      final votes = result[2] ?? [];
+      
+      return List.generate(ids.length, (i) {
+        return {
+          'id': ids[i].toInt(),
+          'name': names[i] ?? 'Unknown',
+          'votes': votes[i].toInt(),
+        };
+      });
+    } catch (e) {
+      debugPrint("Error getting candidates: $e");
+      rethrow;
+    }
   }
 }

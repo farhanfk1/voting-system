@@ -164,7 +164,7 @@ class _CreateElectionScreenState extends State<CreateElectionScreen> {
                     if (!vm.isLoading) {
                       final success = await _submitElection();
                       if (success && context.mounted) {
-                        Navigator.pushNamed(context, RoutesName.home);
+                        Navigator.pushReplacementNamed(context, RoutesName.adminElectionList);
                       }
                     }
                   },

@@ -78,25 +78,72 @@ class ElectionViewModel with ChangeNotifier {
   /// FETCH ALL ELECTIONS
   /// ---------------------------
   Future<void> fetchElections() async {
-  _isLoading = true;
-  notifyListeners();
-
-  try {
-     final response = await _repo.getAllElections();
-     _elections = response.map((e) => ElectionModel.fromJson(e)).toList();
-    // _elections = response
-    //     .map((json) => ElectionModel.fromJson(json))
-    //     .toList();
-     
-      // debugPrint("Unexpected response type: ${response.runtimeType}");
-      // _elections = [];
-    
-  } catch (e) {
-    debugPrint("Error fetching elections: $e");
-  } finally {
-    _isLoading = false;
+    _isLoading = true;
     notifyListeners();
-  }
-}
 
+    try {
+      final response = await _repo.getAllElections();
+      _elections = response.map((e) => ElectionModel.fromJson(e)).toList();
+    } catch (e) {
+      debugPrint("Error fetching elections: $e");
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> addCandidate(int electionId, String candidateName) async {
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      await _repo.addCandidate(electionId, candidateName);
+      debugPrint("Candidate added successfully");
+    } catch (e) {
+      debugPrint("Error adding candidate: $e");
+      rethrow;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> advancePhase(int electionId) async {
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      await _repo.advancePhase(electionId);
+      await fetchElections();
+      debugPrint("Phase advanced successfully");
+    } catch (e) {
+      debugPrint("Error advancing phase: $e");
+      rethrow;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> getCandidates(int electionId) async {
+    try {
+      return await _repo.getCandidates(electionId);
+    } catch (e) {
+      debugPrint("Error getting candidates: $e");
+      rethrow;
+    }
+  }
+
+  String getPhaseText(int phase) {
+    switch (phase) {
+      case 0:
+        return 'Registration';
+      case 1:
+        return 'Voting';
+      case 2:
+        return 'Ended';
+      default:
+        return 'Unknown';
+    }
+  }
 }

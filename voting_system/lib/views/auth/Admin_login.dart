@@ -26,7 +26,7 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
 final viewModel = Provider.of<AdminAuthViewModel>(context, listen: false);
 final success = await viewModel.adminLogin(email, password);
 if (success){
- Navigator.pushNamed(context, RoutesName.createElection);
+ Navigator.pushReplacementNamed(context, RoutesName.adminElectionList);
 }else{
   ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Invalid admin credentials')));
 }
