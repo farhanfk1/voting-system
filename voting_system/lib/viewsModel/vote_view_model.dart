@@ -40,7 +40,7 @@ final VoterRepository _voterRepo = VoterRepository();
 
     final alreadyVoted = await _voterRepo.hasAlreadyVoted(electionId);
      if (alreadyVoted) {
-        return "You have already voted in this election.";
+        throw Exception("Already voted");
       }
     //  Cast vote on blockchain
       await _repo.vote(electionId, candidateIndex);
@@ -49,7 +49,7 @@ final VoterRepository _voterRepo = VoterRepository();
     return "Vote cast successfully!";
     } catch (e) {
       debugPrint("Vote error: $e");
-      return "Voting failed. Please try again.";
+      rethrow;
     } finally {
       _isLoading = false;
       notifyListeners();

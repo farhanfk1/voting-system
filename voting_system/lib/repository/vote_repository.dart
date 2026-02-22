@@ -5,7 +5,7 @@ import 'package:http/http.dart';
 import 'package:web3dart/web3dart.dart';
 
 class VoteRepository {
-  final String _rpcUrl = 'http://192.168.0.116:7545';
+    final String _rpcUrl = 'http://192.168.0.116:7545';
   final String _privateKey = '0x63cb110b24cd132b892bb143f3b77a62e8c9291df96b48913c166450a39c5b95';
 
   late Web3Client _client;

@@ -35,13 +35,14 @@ class _ResultScreenState extends State<ResultScreen> {
        appBar: AppBar(title: Text('Election Result')),
        body: _loading ? Center(child: CircularProgressIndicator(),) :
        ListView.builder(
-        itemCount: (result!['votes'] as List<dynamic>).length,
+        itemCount: result!['ids'].length,
         itemBuilder: (context, index){
           final votesList = result!['votes'] as List<dynamic>;
         final votes = votesList[index] as BigInt; // access each element
                      return ListTile(
-                  title: Text('Candidate ${index + 1}'),
-                  trailing: Text(votes.toString()),
+                  title: Text(result!['names'][index]),
+                  trailing: Text((result!['votes'][index] as BigInt).toString(),
+              ),
           );
 
        })

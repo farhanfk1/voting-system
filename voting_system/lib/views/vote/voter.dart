@@ -32,7 +32,8 @@ class _VoterScreenState extends State<VoterScreen> {
         arguments: {'electionId': widget.electionId},
       );
     } catch (e){
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Vote failed')));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Vote failed: ${e.toString()}'),));
 
 
     }
@@ -47,14 +48,14 @@ class _VoterScreenState extends State<VoterScreen> {
   body: Column(
     children: [
       RadioListTile<int>(
-        title: Text('Candidate 1'),
+        title: Text('Farhan khan'),
         value: 0,
         groupValue: selectedCandidate,
         onChanged: (val) => setState(() => selectedCandidate = val),
         ),
                   SizedBox(height: 20),
                   RadioListTile<int>(
-            title: Text('Candidate 2'),
+            title: Text('Hamid wali'),
             value: 1,
             groupValue: selectedCandidate,
             onChanged: (val) => setState(() => selectedCandidate = val),
