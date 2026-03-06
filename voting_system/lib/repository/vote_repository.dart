@@ -1,12 +1,13 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart';
 import 'package:web3dart/web3dart.dart';
 
 class VoteRepository {
-    final String _rpcUrl = 'http://192.168.0.116:7545';
-  final String _privateKey = '0x63cb110b24cd132b892bb143f3b77a62e8c9291df96b48913c166450a39c5b95';
+    final String _rpcUrl = 'http://192.168.0.122:7545';
+  final String _privateKey = '0xfeaff4bd106b837474d5af5f86de289e0c19c71e5645502fc684505621bc8a48';
 
   late Web3Client _client;
   late Credentials _credentials;
@@ -18,7 +19,7 @@ class VoteRepository {
 
   VoteRepository() {
     _client = Web3Client(_rpcUrl, Client());
-    _contractAddress = EthereumAddress.fromHex('0xA6d204F386F914A0938dCbd48C69c20ffce1b1be');
+    _contractAddress = EthereumAddress.fromHex('0xe28ADCE1c377507cEE5BB8eE52D13855a6fB2a87');
   }
 
   Future<void> init() async {
@@ -82,9 +83,40 @@ class VoteRepository {
       params: [electionId],
     );
 
-    // getCandidates returns (ids, names, votes) - res[2] is the votes array
+    // getCandidates returns (ids, names, votes) - return all three arrays
+    final ids = res[0] ?? [];
+    final names = res[1] ?? [];
+    final votes = res[2] ?? [];
+    
     return {
-      'votes': res[2] ?? [],
+      'ids': ids,
+      'names': names,
+      'votes': votes,
     };
+  }
+
+   Future<List<Map<String, dynamic>>> getCandidates(int electionId) async {
+    try {
+      final result = await _client.call(
+        contract: _contract,
+        function: _getCandidatesFunction,
+        params: [BigInt.from(electionId)],
+      );
+      
+      final ids = result[0] ?? [];
+      final names = result[1] ?? [];
+      final votes = result[2] ?? [];
+      
+      return List.generate(ids.length, (i) {
+        return {
+          'id': ids[i].toInt(),
+          'name': names[i] ?? 'Unknown',
+          'votes': votes[i].toInt(),
+        };
+      });
+    } catch (e) {
+      debugPrint("Error getting candidates: $e");
+      rethrow;
+    }
   }
 }

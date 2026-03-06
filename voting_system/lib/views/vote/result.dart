@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:voting_system/viewsModel/vote_view_model.dart';
 
 class ResultScreen extends StatefulWidget {
-    final BigInt electionId;
+    final int electionId;
 
   const ResultScreen({super.key, required this.electionId});
 

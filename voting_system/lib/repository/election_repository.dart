@@ -6,9 +6,9 @@ import 'package:http/http.dart';
 import 'package:web3dart/web3dart.dart';
 
 class ElectionRepository {
-  final String _rpcUrl = 'http://192.168.0.116:7545'; 
-  final String _privateKey = '0x63cb110b24cd132b892bb143f3b77a62e8c9291df96b48913c166450a39c5b95'; 
-  final String _contractAddress = '0xA6d204F386F914A0938dCbd48C69c20ffce1b1be';
+  final String _rpcUrl = 'http://192.168.0.122:7545'; 
+  final String _privateKey = '0xfeaff4bd106b837474d5af5f86de289e0c19c71e5645502fc684505621bc8a48'; 
+  final String _contractAddress = '0xe28ADCE1c377507cEE5BB8eE52D13855a6fB2a87';
   late Web3Client _client;
   late Credentials _credentials;
  // late EthereumAddress _contractAddress;

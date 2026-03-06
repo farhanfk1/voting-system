@@ -90,7 +90,12 @@ class _CreateElectionScreenState extends State<CreateElectionScreen> {
       return false;
     }
   }
-
+    @override
+void dispose() {
+  _nameController.dispose();
+  _descController.dispose();
+  super.dispose();
+}
   @override
   Widget build(BuildContext context) {
     final vm = Provider.of<ElectionViewModel>(context);

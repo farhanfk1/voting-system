@@ -210,8 +210,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                   RoutesName.voter,
                                   arguments: {
                                     'electionId': election['id'] is BigInt
-                                        ? election['id']
-                                        : BigInt.from(election['id'] as int),
+                                        ? (election['id'] as BigInt).toInt()
+                                        : election['id'] as int,
                                     'electionName': election['name'] ?? 'Election',
                                   },
                                 );
@@ -221,8 +221,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                   RoutesName.result,
                                   arguments: {
                                     'electionId': election['id'] is BigInt
-                                        ? election['id']
-                                        : BigInt.from(election['id'] as int),
+                                        ? (election['id'] as BigInt).toInt()
+                                        : election['id'] as int,
                                   },
                                 );
                               } else {

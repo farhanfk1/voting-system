@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:voting_system/repository/election_repository.dart';
 import 'package:voting_system/repository/vote_repository.dart';
-import 'package:voting_system/repository/voter_repository.dart';
 
 class VoteViewModel with ChangeNotifier{
+  final ElectionRepository _electionRepo = ElectionRepository();
   final VoteRepository _repo = VoteRepository();
-final VoterRepository _voterRepo = VoterRepository();
-  
   bool _isLoading = false;
   bool get isLoading => _isLoading;
 
@@ -13,14 +12,18 @@ final VoterRepository _voterRepo = VoterRepository();
   List<Map<String, dynamic>> _elections = [];
   List<Map<String, dynamic>> get elections => _elections;
 
+  // Track voted elections locally since VoterRepository is commented out
+  Set<int> _votedElections = {};
+
   Future<void> init() async {
 
     try {
          _isLoading = true;
     notifyListeners();
+    await _electionRepo.init();
     await _repo.init();
      
-    final data = await _repo.getElections();
+    final data = await _electionRepo.getAllElections();
     _elections = List<Map<String, dynamic>>.from(data);
     } catch (e) {
       debugPrint("INIT ERROR: $e");
@@ -30,22 +33,25 @@ final VoterRepository _voterRepo = VoterRepository();
     }
  
      } 
+  Future<List<Map<String, dynamic>>> getCandidates(int electionId) async {
+  return await _electionRepo.getCandidates(electionId);
+}
 
-
-  Future<String> castVote(BigInt electionId, int candidateIndex) async {
+  Future<String> castVote(int electionId, int candidateIndex) async {
     _isLoading = true;
     notifyListeners();
     try {
-    //  Check if voter already voted
-
-    final alreadyVoted = await _voterRepo.hasAlreadyVoted(electionId);
-     if (alreadyVoted) {
-        throw Exception("Already voted");
-      }
+    //  Check if voter already voted locally
+    if (_votedElections.contains(electionId)) {
+      throw Exception("Already voted");
+    }
+    
     //  Cast vote on blockchain
-      await _repo.vote(electionId, candidateIndex);
-    //   Mark as voted in Firestore
-    await _voterRepo.markAsVoted(electionId);
+      await _repo.vote(BigInt.from(electionId), candidateIndex);
+      
+    // Mark as voted locally
+    _votedElections.add(electionId);
+      
     return "Vote cast successfully!";
     } catch (e) {
       debugPrint("Vote error: $e");
@@ -56,8 +62,10 @@ final VoterRepository _voterRepo = VoterRepository();
     }
   }
 
-  Future<Map<String, dynamic>> getResult(BigInt electionId) async {
-    return await _repo.getResult(electionId);
+  Future<Map<String, dynamic>> getResult(int electionId) async {
+    return await _repo.getResult(BigInt.from(electionId));
   }
+
+
 
 }
