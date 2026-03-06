@@ -12,6 +12,9 @@ class VoteViewModel with ChangeNotifier{
   List<Map<String, dynamic>> _elections = [];
   List<Map<String, dynamic>> get elections => _elections;
 
+  // Track voted elections locally since VoterRepository is commented out
+  Set<int> _votedElections = {};
+
   Future<void> init() async {
 
     try {
