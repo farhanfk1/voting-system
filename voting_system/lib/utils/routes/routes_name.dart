@@ -1,5 +1,5 @@
 class RoutesName {
-  static const String Splach = 'splach_screen';
+  static const String Splash = 'splash_screen';
   static const String login = 'login_screen';
   static const String admin = 'admin_login_screen';
   static const String signup = 'signup_screen';

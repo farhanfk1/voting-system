@@ -10,14 +10,14 @@ import 'package:voting_system/views/vote/home.dart';
 import 'package:voting_system/views/auth/login.dart';
 import 'package:voting_system/views/vote/result.dart';
 import 'package:voting_system/views/auth/signup.dart';
-import 'package:voting_system/views/splach_view.dart';
+import 'package:voting_system/views/splash_view.dart';
 import 'package:voting_system/views/vote/voter.dart';
 
 class Routes {
   static Route<dynamic> generateRoute(RouteSettings settings){
     switch(settings.name){
      
-      case RoutesName.Splach:
+      case RoutesName.Splash:
       return MaterialPageRoute(builder: (BuildContext context)=> SplashScreen());
 
       case RoutesName.login:

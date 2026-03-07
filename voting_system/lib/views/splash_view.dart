@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:voting_system/viewsModel/splach_services.dart';
+import 'package:voting_system/viewsModel/splash_services.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
