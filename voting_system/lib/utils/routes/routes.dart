@@ -18,7 +18,7 @@ class Routes {
     switch(settings.name){
      
       case RoutesName.Splach:
-      return MaterialPageRoute(builder: (BuildContext context)=> Splach_screen());
+      return MaterialPageRoute(builder: (BuildContext context)=> SplashScreen());
 
       case RoutesName.login:
       return MaterialPageRoute(builder: (BuildContext context)=> LoginScreen());

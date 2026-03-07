@@ -30,10 +30,10 @@ class LoginViewModel with ChangeNotifier{
          Navigator.pushReplacementNamed(context, RoutesName.home);
           return true;
         } on FirebaseAuthException catch (e) {
-              if (e.code == 'weak-password') {
-      print('The password provided is too weak.');
-       } else if (e.code == 'email-already-in-use') {
-      print('The account already exists for that email.');
+              if (e.code == 'user-not-found') {
+      print('No user found for that email.');
+       } else if (e.code == 'wrong-password') {
+      print('The password is incorrect.');
        } else {
           Utils.toastMessage(e.message ?? "Login Failed");
              }
