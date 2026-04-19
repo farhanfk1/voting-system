@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
+import 'package:voting_system/utils/logout/logout_dialog.dart';
 import 'package:voting_system/utils/routes/routes_name.dart';
+import 'package:voting_system/utils/utils.dart';
 import 'package:voting_system/viewsModel/election_view_model.dart';
 
 class AdminElectionListScreen extends StatefulWidget {
@@ -53,6 +56,7 @@ class _AdminElectionListScreenState extends State<AdminElectionListScreen> {
       appBar: AppBar(
         title: const Text('Admin - Manage Elections'),
         backgroundColor: Colors.deepPurple,
+        automaticallyImplyLeading: false,
         actions: [
           IconButton(
             onPressed: () {
@@ -60,6 +64,13 @@ class _AdminElectionListScreenState extends State<AdminElectionListScreen> {
             },
             icon: const Icon(Icons.add),
             tooltip: 'Create Election',
+          ),
+          IconButton(
+            onPressed: () {
+              LogoutDialog.show(context);
+            },
+            icon: const Icon(Icons.logout),
+            tooltip: 'Logout',
           ),
         ],
       ),
@@ -178,4 +189,4 @@ class _AdminElectionListScreenState extends State<AdminElectionListScreen> {
       ),
     );
   }
-}
+  }

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
+import 'package:voting_system/utils/logout/logout_dialog.dart';
 import 'package:voting_system/utils/routes/routes_name.dart';
+import 'package:voting_system/utils/utils.dart';
 import 'package:voting_system/viewsModel/election_view_model.dart';
 import 'package:voting_system/widgets/reusable_textfield.dart';
 import 'package:voting_system/widgets/round_button.dart';
@@ -105,6 +108,14 @@ void dispose() {
         centerTitle: true,
         automaticallyImplyLeading: false,
         title: const Text('Admin Panel - Create Election'),
+        backgroundColor: Colors.deepPurple,
+        actions: [
+          IconButton(
+            onPressed: () => LogoutDialog.show(context),
+            icon: const Icon(Icons.logout),
+            tooltip: 'Logout',
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -180,4 +191,6 @@ void dispose() {
       ),
     );
   }
+
 }
+

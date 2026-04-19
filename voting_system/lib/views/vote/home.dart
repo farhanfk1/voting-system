@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:voting_system/utils/logout/logout_dialog.dart';
 import 'package:voting_system/utils/routes/routes_name.dart';
 import 'package:voting_system/viewsModel/vote_view_model.dart';
 
@@ -63,7 +65,7 @@ class _HomeScreenState extends State<HomeScreen> {
         return Icons.help;
     }
   }
-
+   final auth = FirebaseAuth.instance;
   @override
   Widget build(BuildContext context) {
     final vm = Provider.of<VoteViewModel>(context);
@@ -81,7 +83,12 @@ class _HomeScreenState extends State<HomeScreen> {
             icon: const Icon(Icons.refresh),
             onPressed: () => vm.init(),
           ),
-        ],
+         IconButton(
+            onPressed: () => LogoutDialog.show(context),
+            icon: const Icon(Icons.logout),
+            tooltip: 'Logout',
+          ),
+        ], 
       ),
       body: Container(
         decoration: const BoxDecoration(

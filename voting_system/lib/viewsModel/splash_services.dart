@@ -1,28 +1,29 @@
 import 'dart:async';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:voting_system/utils/routes/routes_name.dart';
 
 class SplashServices {
 
-  void checkAuthentication(BuildContext context){
+  void checkAuthentication(BuildContext context) async {
 
     final auth = FirebaseAuth.instance;
+    final user = auth.currentUser;
+    Timer(const Duration(seconds: 3), () async {
 
-    Timer(const Duration(seconds: 3), () {
+      
 
-      final user = auth.currentUser;
-
-      if(context.mounted){
+      
 
         if(user != null){
+            Navigator.pushReplacementNamed(
+              context,
+              RoutesName.home,
+            );
+          }
 
-          Navigator.pushReplacementNamed(
-            context,
-            RoutesName.home,
-          );
-
-        }else{
+        else{
 
           Navigator.pushReplacementNamed(
             context,
@@ -30,11 +31,10 @@ class SplashServices {
           );
 
         }
+    }
+    );
 
-      }
-
-    });
+    }
 
   }
 
-}

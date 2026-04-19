@@ -14,6 +14,20 @@ class AdminAuthViewModel with ChangeNotifier {
   bool _isLoggedIn = false;
   bool get isLoggedIn => _isLoggedIn;
 
+  // Check if current user is admin
+  Future<bool> isCurrentUserAdmin() async {
+    final user = _auth.currentUser;
+    if (user == null) return false;
+    
+    try {
+      final doc = await FirebaseFirestore.instance.collection('admin').doc(user.uid).get();
+      return doc.exists;
+    } catch (e) {
+      debugPrint("Error checking admin status: $e");
+      return false;
+    }
+  }
+
 Future<bool> adminLogin(String email, String password) async {
   _isLoading = true;
   notifyListeners();
@@ -38,7 +52,7 @@ Future<bool> adminLogin(String email, String password) async {
     if (user != null && email == _adminEmail) {
       _isLoggedIn = true;
 
-      // ✅ Firestore check
+      // Firestore check
       final uid = user.uid;
       final doc = await FirebaseFirestore.instance
           .collection('admin')
@@ -73,4 +87,15 @@ Future<bool> adminLogin(String email, String password) async {
     return false;
   }
 }
+
+  // Admin logout
+  Future<void> adminLogout() async {
+    try {
+      await _auth.signOut();
+      _isLoggedIn = false;
+      notifyListeners();
+    } catch (e) {
+      debugPrint("Error during admin logout: $e");
+    }
+  }
 }
