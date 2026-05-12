@@ -3,11 +3,12 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart';
+import 'package:voting_system/config/blockchain_config.dart';
 import 'package:web3dart/web3dart.dart';
 
 class VoteRepository {
-    final String _rpcUrl = 'http://192.168.0.122:7545';
-  final String _privateKey = '0xe36328e66830f6fc94dabff9063e877ad73e71e36745d79c861c5591f98616ed';
+    final String _rpcUrl = BlockchainConfig.rpcUrl;
+  final String _privateKey = '0xb01ebe26372b95f0595784279b2d8fc5291a53b0e9d02feceda61d69a596ea2d';
 
   late Web3Client _client;
   late Credentials _credentials;
@@ -19,7 +20,7 @@ class VoteRepository {
 
   VoteRepository() {
     _client = Web3Client(_rpcUrl, Client());
-    _contractAddress = EthereumAddress.fromHex('0x69947Fc989426B320Fb9c861Ca4c0Bc2E74a51e6');
+    _contractAddress = EthereumAddress.fromHex('0x08f07453475AAd7Ca5e1F842C518Fbf50611CbEf');
   }
 
   Future<void> init() async {
@@ -69,7 +70,7 @@ class VoteRepository {
           parameters: [electionId, BigInt.from(candidateIndex)],
           maxGas: 100000,
         ),
-        chainId: 1337,
+        chainId: BlockchainConfig.chainId,
       );
     } catch (e) {
       rethrow;

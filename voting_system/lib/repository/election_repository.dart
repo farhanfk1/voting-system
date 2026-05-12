@@ -3,12 +3,13 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart';
+import 'package:voting_system/config/blockchain_config.dart';
 import 'package:web3dart/web3dart.dart';
 
 class ElectionRepository {
-  final String _rpcUrl = 'http://192.168.0.122:7545'; 
-  final String _privateKey = '0xe36328e66830f6fc94dabff9063e877ad73e71e36745d79c861c5591f98616ed'; 
-  final String _contractAddress = '0x69947Fc989426B320Fb9c861Ca4c0Bc2E74a51e6';
+  final String _rpcUrl = BlockchainConfig.rpcUrl; 
+  final String _privateKey = '0xb01ebe26372b95f0595784279b2d8fc5291a53b0e9d02feceda61d69a596ea2d'; 
+  final String _contractAddress = '0x08f07453475AAd7Ca5e1F842C518Fbf50611CbEf';
   late Web3Client _client;
   late Credentials _credentials;
  // late EthereumAddress _contractAddress;
@@ -86,9 +87,9 @@ class ElectionRepository {
           parameters: [name, description, BigInt.from(start), BigInt.from(end)],
           maxGas: 3000000,
         ),
-        chainId: 1337,
+        chainId: BlockchainConfig.chainId,
       );
-      
+
       debugPrint("Election creation transaction sent successfully, txHAsh: $txHash");
       // return the new election as a map
       return {
@@ -140,7 +141,7 @@ class ElectionRepository {
           parameters: [BigInt.from(electionId), candidateName],
           maxGas: 500000,
         ),
-        chainId: 1337,
+        chainId: BlockchainConfig.chainId,
       );
       debugPrint("Candidate added successfully");
     } catch (e) {
@@ -161,7 +162,7 @@ class ElectionRepository {
           parameters: [BigInt.from(electionId)],
           maxGas: 500000,
         ),
-        chainId: 1337,
+        chainId: BlockchainConfig.chainId,
       );
       debugPrint("Phase advanced successfully");
     } catch (e) {
