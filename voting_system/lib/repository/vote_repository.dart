@@ -7,11 +7,9 @@ import 'package:voting_system/config/blockchain_config.dart';
 import 'package:web3dart/web3dart.dart';
 
 class VoteRepository {
-    final String _rpcUrl = BlockchainConfig.rpcUrl;
-  final String _privateKey = '0xb01ebe26372b95f0595784279b2d8fc5291a53b0e9d02feceda61d69a596ea2d';
+  final String _rpcUrl = BlockchainConfig.rpcUrl;
 
   late Web3Client _client;
-  late Credentials _credentials;
   late EthereumAddress _contractAddress;
   late DeployedContract _contract;
   late ContractFunction _voteFunction;
@@ -20,11 +18,10 @@ class VoteRepository {
 
   VoteRepository() {
     _client = Web3Client(_rpcUrl, Client());
-    _contractAddress = EthereumAddress.fromHex('0x08f07453475AAd7Ca5e1F842C518Fbf50611CbEf');
+    _contractAddress = EthereumAddress.fromHex('0xadC54BFB1637cDa0Ace8019e7b88f0926a7ED93A');
   }
 
   Future<void> init() async {
-    _credentials = EthPrivateKey.fromHex(_privateKey);
     final abiString = await rootBundle.loadString('assets/abi/dvs.json');
     final abijson = jsonDecode(abiString);
 
@@ -59,11 +56,19 @@ class VoteRepository {
       };
     });
   }
-    // Cast a vote
-  Future<void> vote(BigInt electionId, int candidateIndex) async {
+  /// [voterPrivateKey] — Ganache private key assigned to this Firebase user.
+  Future<void> vote(
+    BigInt electionId,
+    int candidateIndex, {
+    required String voterPrivateKey,
+  }) async {
     try {
+      final credentials = EthPrivateKey.fromHex(voterPrivateKey);
+      final sender = await credentials.extractAddress();
+      debugPrint('Voting from wallet: ${sender.hex}');
+
       await _client.sendTransaction(
-        _credentials,
+        credentials,
         Transaction.callContract(
           contract: _contract,
           function: _voteFunction,
@@ -84,11 +89,10 @@ class VoteRepository {
       params: [electionId],
     );
 
-    // getCandidates returns (ids, names, votes) - return all three arrays
-    final ids = res[0] ?? [];
-    final names = res[1] ?? [];
-    final votes = res[2] ?? [];
-    
+    final ids = res[0] is List ? List<dynamic>.from(res[0] as List) : <dynamic>[];
+    final names = res[1] is List ? List<dynamic>.from(res[1] as List) : <dynamic>[];
+    final votes = res[2] is List ? List<dynamic>.from(res[2] as List) : <dynamic>[];
+
     return {
       'ids': ids,
       'names': names,

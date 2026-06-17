@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:voting_system/repository/auth_repository.dart';
+import 'package:voting_system/repository/wallet_assignment_repository.dart';
 import 'package:voting_system/utils/routes/routes_name.dart';
 import 'package:voting_system/utils/utils.dart';
 
@@ -25,6 +26,7 @@ class LoginViewModel with ChangeNotifier{
         setLoading(true);
         try{
           await _authRepository.signIn(email, password);
+          await WalletAssignmentRepository().ensureWalletAssigned();
           Utils.toastMessage("Login Successful");
           // Move navigation here
          Navigator.pushReplacementNamed(context, RoutesName.home);
@@ -69,7 +71,10 @@ class LoginViewModel with ChangeNotifier{
       'dob': dob,
       'address': address,
       'hasVoted': false,
+      'votedElections': [],
     });
+
+    await WalletAssignmentRepository().assignWalletToUser(uid);
 
     Utils.toastMessage("SignUp successfully");
 

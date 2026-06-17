@@ -4,12 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart';
 import 'package:voting_system/config/blockchain_config.dart';
+import 'package:voting_system/config/ganache_accounts.dart';
 import 'package:web3dart/web3dart.dart';
 
 class ElectionRepository {
-  final String _rpcUrl = BlockchainConfig.rpcUrl; 
-  final String _privateKey = '0xb01ebe26372b95f0595784279b2d8fc5291a53b0e9d02feceda61d69a596ea2d'; 
-  final String _contractAddress = '0x08f07453475AAd7Ca5e1F842C518Fbf50611CbEf';
+  final String _rpcUrl = BlockchainConfig.rpcUrl;
+  final String _privateKey = GanacheAccounts.adminPrivateKey; 
+  final String _contractAddress = '0xadC54BFB1637cDa0Ace8019e7b88f0926a7ED93A';
   late Web3Client _client;
   late Credentials _credentials;
  // late EthereumAddress _contractAddress;
@@ -25,13 +26,14 @@ class ElectionRepository {
    _testConnection();
     // _contractAddress = EthereumAddress.fromHex('0x558c24bF4A0388984fD05Ed95a6A698A955A85bd'); 
   }
-  void _testConnection()async {
-      try {
-  final block = await _client.getBlockNumber();
-  debugPrint("Connected to blockchain! Current block: $block");
-} catch (e) {
-  debugPrint("Cannot connect to blockchain: $e");
-}
+  void _testConnection() async {
+    try {
+      debugPrint('Connecting to blockchain at $_rpcUrl');
+      final block = await _client.getBlockNumber();
+      debugPrint('Connected to blockchain! Current block: $block');
+    } catch (e) {
+      debugPrint('Cannot connect to blockchain: $e');
+    }
   }
 
   Future<void> init() async {

@@ -69,15 +69,20 @@ class _VoterScreenState extends State<VoterScreen> with AutomaticKeepAliveClient
       return;
     }
     try {
-      await Provider.of<VoteViewModel>(context, listen: false)
+      final message = await Provider.of<VoteViewModel>(context, listen: false)
           .castVote(widget.electionId, selectedCandidate!);
       if (!mounted) return;
+
+      final isSuccess = message.toLowerCase().contains('success');
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Vote submitted successfully!'),
-          backgroundColor: Colors.green,
+        SnackBar(
+          content: Text(message),
+          backgroundColor: isSuccess ? Colors.green : Colors.orange,
         ),
       );
+
+      if (!isSuccess) return;
+
       Navigator.pushNamed(
         context,
         RoutesName.result,

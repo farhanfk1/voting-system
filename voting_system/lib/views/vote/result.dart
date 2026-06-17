@@ -57,11 +57,16 @@ class _ResultScreenState extends State<ResultScreen> {
     return int.tryParse(value.toString()) ?? 0;
   }
 
+  List<dynamic> _asList(dynamic value) {
+    if (value is List) return List<dynamic>.from(value);
+    return [];
+  }
+
   List<_CandidateResult> _parseResults() {
     if (result == null) return [];
-    final ids = result!['ids'] as List<dynamic>? ?? [];
-    final names = result!['names'] as List<dynamic>? ?? [];
-    final votes = result!['votes'] as List<dynamic>? ?? [];
+    final ids = _asList(result!['ids']);
+    final names = _asList(result!['names']);
+    final votes = _asList(result!['votes']);
 
     return List.generate(ids.length, (i) {
       return _CandidateResult(
